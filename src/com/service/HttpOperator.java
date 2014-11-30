@@ -57,28 +57,23 @@ public class HttpOperator {
 	public boolean login(String name,String pass){
    //µ«¬Ω
 		String path="http://192.168.0.108:8080/Notebook2_service/Login?name='"+name+"'&pass='"+pass+"'";
-		URL url;
-		try {
-			url = new URL(path);
-			HttpURLConnection conn=(HttpURLConnection) url.openConnection();
-            conn.setConnectTimeout(5000);
-            conn.setRequestMethod("GET");
-            conn.connect();
-            if(conn.getResponseCode()==200){
-            	InputStream inputStream=conn.getInputStream();
-                return jsonUtils.checkUser(inputStream);
-            }else{return false;}  
-		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			HttpGet get=new HttpGet(path);
+			try {
+				response=httpClient.execute(get);
+				if(response.getStatusLine().getStatusCode()==200){
+				InputStream is=response.getEntity().getContent();
+				return jsonUtils.checkUser(is);
+				}
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return false;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-		
 	}
+			
 	public boolean findPass(String email){
     //’“ªÿ√‹¬Î
 		
