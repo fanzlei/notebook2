@@ -1,5 +1,10 @@
 package com.example.notebook2;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpParams;
+
 import com.service.HttpOperator;
 
 import android.app.Activity;
@@ -46,6 +51,7 @@ public class Register extends Activity{
 					if(!pass.equals(checkPass)){
 						error.append("\n两次输入密码不相同");
 						errorMsg.setText(error);
+						
 					}
 					if(pass.equals(checkPass)){
 						error.delete(0, error.length());

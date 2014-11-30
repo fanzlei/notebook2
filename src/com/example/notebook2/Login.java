@@ -23,7 +23,7 @@ public class Login extends Activity {
 
 	String name,pass;
 	EditText Ename,Epass;
-	HttpOperator httpO=new HttpOperator();
+	HttpOperator httpO;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -31,7 +31,7 @@ public class Login extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
-	    
+		httpO=new HttpOperator();
 	    Ename=(EditText) findViewById(R.id.name);
 	    Epass=(EditText) findViewById(R.id.pass);
 	    SharedPreferences sp= getSharedPreferences("localSave", MODE_WORLD_WRITEABLE);
@@ -46,6 +46,8 @@ public class Login extends Activity {
 	}
 
 	public void login(View v){
+		 name=Ename.getText().toString().trim();
+		    pass=Ename.getText().toString().trim();
 		if(httpO.login(name, pass)){
 			//登陆成功处理
 			Intent intent=new Intent(Login.this,Main.class);
