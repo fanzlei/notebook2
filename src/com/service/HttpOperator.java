@@ -56,17 +56,18 @@ public class HttpOperator {
 	}
 	public boolean login(String name,String pass){
    //µÇÂ½
-		String path="http://192.168.0.108:8080/Login?name='"+name+"'&pass='"+pass+"'";
+		String path="http://192.168.0.108:8080/Notebook2_service/Login?name='"+name+"'&pass='"+pass+"'";
 		URL url;
 		try {
 			url = new URL(path);
 			HttpURLConnection conn=(HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(5000);
             conn.setRequestMethod("GET");
-            InputStream inputStream=conn.getInputStream();
-            return jsonUtils.checkUser(inputStream);
-            
-            
+            conn.connect();
+            if(conn.getResponseCode()==200){
+            	InputStream inputStream=conn.getInputStream();
+                return jsonUtils.checkUser(inputStream);
+            }else{return false;}  
 		} catch (MalformedURLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

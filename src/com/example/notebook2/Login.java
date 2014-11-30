@@ -48,17 +48,22 @@ public class Login extends Activity {
 	public void login(View v){
 		 name=Ename.getText().toString().trim();
 		    pass=Ename.getText().toString().trim();
-		if(httpO.login(name, pass)){
-			//登陆成功处理
-			Intent intent=new Intent(Login.this,Main.class);
-			intent.putExtra("name", name);
-			intent.putExtra("pass", pass);
-			startActivity(intent);
+		if(!name.isEmpty()&&name!=null&&!pass.isEmpty()&&pass!=null){
+			if(httpO.login(name, pass)){
+				//登陆成功处理
+				Intent intent=new Intent(Login.this,Main.class);
+				intent.putExtra("name", name);
+				intent.putExtra("pass", pass);
+				startActivity(intent);
+			}
+			else{
+				//登陆失败处理
+				Toast.makeText(Login.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
+			}
+		}else{
+			Toast.makeText(Login.this, "用户名或密码为空", Toast.LENGTH_SHORT).show();
 		}
-		else{
-			//登陆失败处理
-			Toast.makeText(Login.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
-		}
+		
 	}
 	public void forgetPass(View v){
 		final EditText view=new EditText(Login.this);
