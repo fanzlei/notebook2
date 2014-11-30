@@ -18,6 +18,7 @@ public class JsonUtils {
 		String JsonString=inputStreamToString(is);
 		try {
 			JSONObject jb=new JSONObject(JsonString);
+			System.out.println("服务器返回密码验证结果："+jb.getBoolean("isChecked"));
 			return jb.getBoolean("isChecked");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -39,6 +40,21 @@ public class JsonUtils {
 			e.printStackTrace();
 			return "";
 		}
+	}
+
+	public boolean checkRegister(InputStream is) {
+		String jsonString=inputStreamToString(is);
+		try {
+			JSONObject jo=new JSONObject(jsonString);
+			System.out.println(jo.getBoolean("isRegisted"));
+			return jo.getBoolean("isRegisted");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
+		// TODO Auto-generated method stub
 	}
 	
 }

@@ -1,16 +1,30 @@
 package com.example.notebook2;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpParams;
 
-import com.service.HttpOperator;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+
+import com.service.JsonUtils;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.Window;
@@ -21,10 +35,34 @@ import android.widget.Toast;
 
 public class Register extends Activity{
 
-	HttpOperator httpO=new HttpOperator();
 	String name,pass,checkPass,phone,email;
 	TextView errorMsg;
 	StringBuilder error=new StringBuilder();
+	Handler handler=new Handler(){
+
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			super.handleMessage(msg);
+			if(msg.what==0x123){
+				if((Boolean)msg.obj){
+					Intent intent =new Intent(Register.this,Login.class);
+					
+					SharedPreferences sp=getSharedPreferences("localSave",MODE_WORLD_READABLE );
+					SharedPreferences.Editor editor=sp.edit();
+					editor.putString("name", name);
+					editor.putString("pass", pass);
+					editor.commit();
+					startActivity(intent);
+					
+				}else{
+					Toast.makeText(Register.this, "用户名已经存在", Toast.LENGTH_SHORT).show();
+				}
+			}
+			
+		}
+		
+	};
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -68,22 +106,10 @@ public class Register extends Activity{
 		phone=((EditText) findViewById(R.id.phone)).getText().toString().trim();
 		email=((EditText) findViewById(R.id.email)).getText().toString().trim();
 		//输入格式正确
-		if(name.length()>2 && pass.length()>3 &&phone.length()==11&&email.matches("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*")){
-			boolean registed=httpO.register(name,pass,phone,email);
-			if(registed){
-				//注册成功
-				Intent intent =new Intent(Register.this,Login.class);
-				
-				SharedPreferences sp=getSharedPreferences("localSave",MODE_WORLD_READABLE );
-				SharedPreferences.Editor editor=sp.edit();
-				editor.putString("name", name);
-				editor.putString("pass", pass);
-				editor.commit();
-				startActivity(intent);
-				
-			}else{//注册失败，服务器出错
-				Toast.makeText(Register.this, "注册失败，服务器出错", Toast.LENGTH_SHORT).show();
-			}
+		if(name.length()>2 && pass.length()>3 &&phone.length()==11&&
+				email.matches("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*")
+				&&pass.equals(checkPass)){
+			new RegisterThread(name,pass,phone,email).start();
 		}else{
 			error.delete(0, error.length());
 			if(name.length()<=2){
@@ -102,6 +128,60 @@ public class Register extends Activity{
 				error.append("\n邮箱格式不符合");
 				errorMsg.setText(error);
 			}
+			if(!pass.equals(checkPass)){
+				error.append("\n两次输入密码不相同");
+				errorMsg.setText(error);
+			}
 		}
+	}
+	private class RegisterThread extends Thread{
+
+		String name;
+		String pass;
+		String phone;
+		String email;
+		HttpClient httpClient=new DefaultHttpClient();
+		HttpResponse response;
+		JsonUtils jsonUtils=new JsonUtils();
+		public RegisterThread(String name,String pass,String phone,String email) {
+			// TODO Auto-generated constructor stub
+			this.name=name;
+			this.pass=pass;
+			this.phone=phone;
+			this.email=email;
+		}
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			HttpPost post=new HttpPost("http://192.168.0.108:8080/Notebook2_service/Register");
+			try {
+		        List<NameValuePair> params=new ArrayList<NameValuePair>();
+		        params.add(new BasicNameValuePair("name",name));
+		        params.add(new BasicNameValuePair("pass",pass));
+		        params.add(new BasicNameValuePair("phone",phone));
+		        params.add(new BasicNameValuePair("email",email));
+				HttpEntity entity=new UrlEncodedFormEntity(params,HTTP.UTF_8);
+				post.setEntity(entity);
+				response=httpClient.execute(post);
+				if(response.getStatusLine().getStatusCode()==200){
+					InputStream is=response.getEntity().getContent();
+					
+					Message msg=new Message();
+					msg.what=0x123;
+					msg.obj=jsonUtils.checkRegister(is);
+					handler.sendMessage(msg);
+				}
+				
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		
 	}
 }

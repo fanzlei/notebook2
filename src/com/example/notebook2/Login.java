@@ -1,18 +1,26 @@
 package com.example.notebook2;
 
-import com.service.HttpOperator;
+import java.io.IOException;
+import java.io.InputStream;
 
-import android.support.v7.app.ActionBarActivity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import com.service.JsonUtils;
+import com.service.SendEmail;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -23,7 +31,32 @@ public class Login extends Activity {
 
 	String name,pass;
 	EditText Ename,Epass;
-	HttpOperator httpO;
+    HttpResponse response;
+    HttpClient httpClient=new DefaultHttpClient();
+    JsonUtils jsonUtils=new JsonUtils();
+     Handler handler=new Handler(){
+
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			super.handleMessage(msg);
+			if(msg.what==0x123){
+				//登陆验证
+				if(msg.obj!=null){
+					if((Boolean)msg.obj){
+						Intent intent=new Intent(Login.this,Main.class);
+						startActivity(intent);
+					}else{
+						Toast.makeText(Login.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
+					}
+					
+				}else{
+					Toast.makeText(Login.this, "服务器错误", Toast.LENGTH_SHORT).show();
+				}
+			}
+		}
+    	
+    };
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -31,7 +64,6 @@ public class Login extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
-		httpO=new HttpOperator();
 	    Ename=(EditText) findViewById(R.id.name);
 	    Epass=(EditText) findViewById(R.id.pass);
 	    SharedPreferences sp= getSharedPreferences("localSave", MODE_WORLD_WRITEABLE);
@@ -40,26 +72,16 @@ public class Login extends Activity {
 	    Ename.setText(na);
 	    Epass.setText(pa);
 	    name=Ename.getText().toString().trim();
-	    pass=Ename.getText().toString().trim();
+	    pass=Epass.getText().toString().trim();
 	    
-	    
+	  
 	}
 
 	public void login(View v){
 		 name=Ename.getText().toString().trim();
-		    pass=Ename.getText().toString().trim();
+		    pass=Epass.getText().toString().trim();
 		if(!name.isEmpty()&&name!=null&&!pass.isEmpty()&&pass!=null){
-			if(httpO.login(name, pass)){
-				//登陆成功处理
-				Intent intent=new Intent(Login.this,Main.class);
-				intent.putExtra("name", name);
-				intent.putExtra("pass", pass);
-				startActivity(intent);
-			}
-			else{
-				//登陆失败处理
-				Toast.makeText(Login.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
-			}
+			new LoginThread(name,pass).start();
 		}else{
 			Toast.makeText(Login.this, "用户名或密码为空", Toast.LENGTH_SHORT).show();
 		}
@@ -79,17 +101,52 @@ public class Login extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
 				String email=view.getText().toString().trim();
-				boolean sendEmailSuccess= httpO.findPass(email);
-				if(sendEmailSuccess){
-					Toast.makeText(Login.this, "请确认邮件", Toast.LENGTH_SHORT).show();
+				if(email.matches("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*")){
+					SendEmail send=new SendEmail();
+					boolean sendEmailSuccess=send.sendEmail(email);
+					if(sendEmailSuccess){
+						Toast.makeText(Login.this, "请确认邮件", Toast.LENGTH_SHORT).show();
+					}else{
+						Toast.makeText(Login.this, "错误，请联系管理员QQ：872988104", Toast.LENGTH_LONG).show();
+					}
 				}else{
-					Toast.makeText(Login.this, "错误，请联系管理员QQ：872988104", Toast.LENGTH_LONG).show();
+					Toast.makeText(Login.this, "邮箱格式不正确", Toast.LENGTH_SHORT).show();
 				}
+				
 			}}).show();
 	}
 	public void register(View v){
 		Intent intent=new Intent(Login.this,Register.class);
 		startActivity(intent);
 	}
-	
+	private class LoginThread extends Thread{
+
+		String name;
+		String pass;
+		public LoginThread(String name,String pass){
+			this.name=name;
+			this.pass=pass;
+		}
+		public void run() {
+			// TODO Auto-generated method stub
+			String path="http://192.168.0.108:8080/Notebook2_service/Login?name="+name+"&pass="+pass+"";
+			HttpGet get=new HttpGet(path);
+			try {
+				response=httpClient.execute(get);
+				if(response.getStatusLine().getStatusCode()==200){
+				InputStream is=response.getEntity().getContent();
+				Message msg=new Message();
+				msg.what=0x123;
+				msg.obj=jsonUtils.checkUser(is);
+				handler.sendMessage(msg);
+			    
+				}
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}}
 }

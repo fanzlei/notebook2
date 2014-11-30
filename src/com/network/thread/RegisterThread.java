@@ -1,10 +1,7 @@
-package com.service;
+package com.network.thread;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,25 +11,35 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
-public class HttpOperator {
+import com.service.JsonUtils;
 
-	HttpClient httpClient;
+public class RegisterThread implements Runnable{
+
+	String name;
+	String pass;
+	String phone;
+	String email;
+	HttpClient httpClient=new DefaultHttpClient();
 	HttpResponse response;
 	JsonUtils jsonUtils;
-	public HttpOperator(){
-		httpClient=new DefaultHttpClient();
-	    jsonUtils=new JsonUtils();
+	boolean checkRegister=false;
+	public RegisterThread(String name,String pass,String phone,String email) {
+		// TODO Auto-generated constructor stub
+		this.name=name;
+		this.pass=pass;
+		this.phone=phone;
+		this.email=email;
 	}
-	public boolean register(String name,String pass,String phone,String email){
-	//×¢²áÓÃ»§	
-		HttpPost post=new HttpPost("http://192.168.0.108:8080/Login");
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		HttpPost post=new HttpPost("http://192.168.0.108:8080/Notebook2_service/Register");
 		try {
 	        List<NameValuePair> params=new ArrayList<NameValuePair>();
 	        params.add(new BasicNameValuePair("name",name));
@@ -42,8 +49,10 @@ public class HttpOperator {
 			HttpEntity entity=new UrlEncodedFormEntity(params,HTTP.UTF_8);
 			post.setEntity(entity);
 			response=httpClient.execute(post);
-			//Î´Íê´ýÐø
-			
+			if(response.getStatusLine().getStatusCode()==200){
+				InputStream is=response.getEntity().getContent();
+				checkRegister=jsonUtils.checkRegister(is);
+			}
 			
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
@@ -52,31 +61,7 @@ public class HttpOperator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return false;
 	}
-	public boolean login(String name,String pass){
-   //µÇÂ½
-		String path="http://192.168.0.108:8080/Notebook2_service/Login?name='"+name+"'&pass='"+pass+"'";
-			HttpGet get=new HttpGet(path);
-			try {
-				response=httpClient.execute(get);
-				if(response.getStatusLine().getStatusCode()==200){
-				InputStream is=response.getEntity().getContent();
-				return jsonUtils.checkUser(is);
-				}
-			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return false;
-	}
-			
-	public boolean findPass(String email){
-    //ÕÒ»ØÃÜÂë
-		
-		return false;
-		}
+
+	
 }
