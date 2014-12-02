@@ -1,16 +1,20 @@
-package com.example.notebook2;
+package com.notebook2;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.http.HttpClientConnection;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.CoreConnectionPNames;
 
-import com.service.JsonUtils;
-import com.service.SendEmail;
+import com.fanz.notebook2.R;
+import com.service.LoginThread;
+import com.utils.JsonUtils;
+import com.utils.SendEmail;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,8 +22,12 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 import android.view.Window;
@@ -31,10 +39,10 @@ public class Login extends Activity {
 
 	String name,pass;
 	EditText Ename,Epass;
-    HttpResponse response;
+    HttpResponse response=null;
     HttpClient httpClient=new DefaultHttpClient();
     JsonUtils jsonUtils=new JsonUtils();
-     Handler handler=new Handler(){
+    public final  Handler handler=new Handler(){
 
 		@Override
 		public void handleMessage(Message msg) {
@@ -44,14 +52,25 @@ public class Login extends Activity {
 				//登陆验证
 				if(msg.obj!=null){
 					if((Boolean)msg.obj){
+						SharedPreferences sp=getSharedPreferences("localSave",MODE_WORLD_READABLE );
+						SharedPreferences.Editor editor=sp.edit();
+						editor.putString("name", name);
+						editor.putString("pass", pass);
+						editor.commit();
 						Intent intent=new Intent(Login.this,Main.class);
 						startActivity(intent);
 					}else{
 						Toast.makeText(Login.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
+						Uri uri=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+						Ringtone r=RingtoneManager.getRingtone(Login.this, uri);
+						r.play();
 					}
 					
 				}else{
 					Toast.makeText(Login.this, "服务器错误", Toast.LENGTH_SHORT).show();
+					Uri uri=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+					Ringtone r=RingtoneManager.getRingtone(Login.this, uri);
+					r.play();
 				}
 			}
 		}
@@ -81,7 +100,7 @@ public class Login extends Activity {
 		 name=Ename.getText().toString().trim();
 		    pass=Epass.getText().toString().trim();
 		if(!name.isEmpty()&&name!=null&&!pass.isEmpty()&&pass!=null){
-			new LoginThread(name,pass).start();
+			new LoginThread(this,handler,name,pass).start();
 		}else{
 			Toast.makeText(Login.this, "用户名或密码为空", Toast.LENGTH_SHORT).show();
 		}
@@ -119,34 +138,5 @@ public class Login extends Activity {
 		Intent intent=new Intent(Login.this,Register.class);
 		startActivity(intent);
 	}
-	private class LoginThread extends Thread{
-
-		String name;
-		String pass;
-		public LoginThread(String name,String pass){
-			this.name=name;
-			this.pass=pass;
-		}
-		public void run() {
-			// TODO Auto-generated method stub
-			String path="http://192.168.0.108:8080/Notebook2_service/Login?name="+name+"&pass="+pass+"";
-			HttpGet get=new HttpGet(path);
-			try {
-				response=httpClient.execute(get);
-				if(response.getStatusLine().getStatusCode()==200){
-				InputStream is=response.getEntity().getContent();
-				Message msg=new Message();
-				msg.what=0x123;
-				msg.obj=jsonUtils.checkUser(is);
-				handler.sendMessage(msg);
-			    
-				}
-			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}}
+	
 }

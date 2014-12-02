@@ -1,4 +1,4 @@
-package com.example.notebook2;
+package com.notebook2;
 
 
 import java.io.IOException;
@@ -17,7 +17,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
-import com.service.JsonUtils;
+import com.fanz.notebook2.R;
+import com.utils.JsonUtils;
 
 import android.app.Activity;
 import android.content.Intent;

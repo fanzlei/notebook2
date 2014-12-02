@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:title="图库" android:id="@+id/picture_libs"/>
+    <item android:title="相机" android:id="@+id/picture_capture"/>
+ 
+</menu>
+ 

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="添加记录"
+        android:textSize="30sp"
+        android:background="#7D6554"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:id="@+id/add_label"
+        android:gravity="center_horizontal"
+        android:textStyle="italic"/>
+    <EditText 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/note_title"
+        android:textSize="25sp"
+        android:text="无标题"
+        android:gravity="center_horizontal"
+        android:selectAllOnFocus="true"
+        android:layout_below="@id/add_label"
+        />
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="by fanz 2014.12.02"
+        android:layout_below="@id/note_title"
+        android:id="@+id/author_date"/>    <ScrollView 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/author_date"
+        android:id="@+id/note_content">
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/note_content_ll">
+             <EditText 
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/note_content_edit"
+            android:autoLink="web"
+            android:text="    "
+            android:outlineProvider="paddedBounds"
+            android:padding="5dp"
+            />
+        </LinearLayout>
+       
+    </ScrollView>
+   
+   <RelativeLayout 
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:background="#A99485"
+       android:layout_alignParentBottom="true"
+       >
+       
+    <ImageButton 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_launcher"
+        android:onClick="add_picture"
+        android:layout_marginLeft="10dp"
+        />
+    <ImageButton 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_launcher"
+        android:onClick="add_sound"
+        android:layout_centerHorizontal="true"
+       />
+    <ImageButton 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_launcher"
+        android:onClick="add_save"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        />
+   </RelativeLayout> 
+
+</RelativeLayout>
