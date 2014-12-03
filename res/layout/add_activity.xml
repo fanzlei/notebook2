@@ -35,6 +35,8 @@
         android:entries="@array/note_type"
         android:id="@+id/spinner"
         android:spinnerMode="dropdown"
+        android:background="#F49D4E"
+        android:layout_below="@id/note_title"
         android:layout_toRightOf="@id/author_date"/>    <ScrollView 
         android:layout_width="match_parent"
         android:layout_height="match_parent"

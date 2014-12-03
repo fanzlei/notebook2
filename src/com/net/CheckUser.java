@@ -49,6 +49,7 @@ public class CheckUser  extends Thread{
 			Message msg=new Message();
 			msg.what=0x123;
 			msg.obj=jsonUtils.checkUser(is);
+			httpClient.getConnectionManager().shutdown();
 			handler.sendMessage(msg);
 		    
 			}

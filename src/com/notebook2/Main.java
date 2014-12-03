@@ -6,7 +6,6 @@ import java.util.TimerTask;
 import com.adapter.MyAdapter;
 import com.fanz.notebook2.R;
 import com.fragment.MyListFragment;
-
 import com.net.CheckUser;
 import com.utils.JsonUtils;
 
@@ -37,6 +36,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +51,7 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 	MyListFragment listFragment=new MyListFragment();
 	
 	ListView menuList;
+	ListView fragmentList;
 	int selectedPosition=100;
 	ImageButton protrait;
 	boolean isLogined=false;
@@ -109,6 +110,8 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 		menuList=(ListView)findViewById(R.id.menuList);
 		menuList.setAdapter(new MyAdapter(this).getMenuAdapter());
 		menuList.setOnItemClickListener(this);
+		fragmentList=(ListView) findViewById(R.id.fragment_list);
+		this.getFragmentManager().beginTransaction().replace(R.id.container, listFragment).commit();
 		showLeft.setOnClickListener(new OnClickListener(){
 
 			@Override
@@ -294,7 +297,8 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 				selectedPosition=0;
 				showRightPage();
 				setMenuItemSelectedBackgound(parent,position);
-				this.getFragmentManager().beginTransaction().replace(R.id.container, listFragment).commit();
+				SimpleAdapter adapter= new MyAdapter(Main.this).getMyListAdapter();
+				fragmentList.setAdapter(adapter);
 				break;
 			}
 			
@@ -304,7 +308,8 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 				selectedPosition=1;
 				showRightPage();
 				setMenuItemSelectedBackgound(parent,position);				
-				
+				SimpleAdapter adapter= new MyAdapter(Main.this).getLiftAdapter();
+				fragmentList.setAdapter(adapter);
 				break;
 			}
 			
@@ -314,6 +319,8 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 				selectedPosition=2;
 				showRightPage();
 				setMenuItemSelectedBackgound(parent,position);
+				SimpleAdapter adapter= new MyAdapter(Main.this).getWorkAdapter();
+				fragmentList.setAdapter(adapter);
 				break;
 			}
 		case 3:
@@ -322,6 +329,8 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 				selectedPosition=3;
 				showRightPage();
 				setMenuItemSelectedBackgound(parent,position);
+				SimpleAdapter adapter= new MyAdapter(Main.this).getOtherAdapter();
+				fragmentList.setAdapter(adapter);
 				break;
 			}
 		case 4:

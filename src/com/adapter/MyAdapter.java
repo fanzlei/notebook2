@@ -6,8 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.fanz.notebook2.R;
+import com.utils.MySQLiteHelper;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.widget.SimpleAdapter;
 
 public class MyAdapter {
@@ -61,5 +64,36 @@ public class MyAdapter {
 				new int[]{R.id.menu_item_image,R.id.menu_item_text});
 		
 		return adapter;
+	}
+
+	public SimpleAdapter getMyListAdapter() {
+		// TODO Auto-generated method stub
+		MySQLiteHelper helper=new MySQLiteHelper(context, "user_notebook", null, 3);
+		SQLiteDatabase db= helper.getReadableDatabase();
+		String sql="select * from user_notebook where name=?";
+		String name=context.getSharedPreferences("localSave", context.MODE_WORLD_READABLE ).getString("name", "");
+		Cursor cursor= db.rawQuery(sql, new String[]{name});
+		//Î´Íê´ýÐø
+		
+		
+		
+		
+		
+		return null;
+	}
+
+	public SimpleAdapter getLiftAdapter() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public SimpleAdapter getWorkAdapter() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public SimpleAdapter getOtherAdapter() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

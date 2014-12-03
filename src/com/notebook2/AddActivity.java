@@ -51,7 +51,7 @@ public class AddActivity extends Activity{
 	final int REQUEST_CODE_CAMERA=23414;
 	Note note;
 	int type=1;
-	Handler handler=new Handler(){
+	/*Handler handler=new Handler(){
 
 		@Override
 		public void handleMessage(Message msg) {
@@ -60,14 +60,13 @@ public class AddActivity extends Activity{
 			if(msg.what==0x123){
 				if((Boolean) msg.obj){
 					//用户验证通过，保存note
+					System.out.println("用户验证用过，开始向服务器保存数据");
 					new SaveToServer(note).save();
 				}else{
 					Toast.makeText(AddActivity.this, "登陆失败", Toast.LENGTH_SHORT).show();
 				}
 			}
-		}
-		
-	};
+		}};*/
 	public AddActivity() {
 		// TODO Auto-generated constructor stub
 	}
@@ -244,11 +243,13 @@ public class AddActivity extends Activity{
 			System.out.println("笔记成功保存到本地");
 		}else{System.out.println("笔记保存到本地失败");}
 		//执行验证用户名是否登陆成功，成功则保存到服务器
-		new CheckUser(handler,this.getSharedPreferences("localSave",MODE_WORLD_READABLE)
-				.getString("name", ""), 
-				this.getSharedPreferences("localSave",MODE_WORLD_READABLE)
-				.getString("pass", "")).start();
-		
+//		new CheckUser(handler,this.getSharedPreferences("localSave",MODE_WORLD_READABLE)
+//				.getString("name", ""), 
+//				this.getSharedPreferences("localSave",MODE_WORLD_READABLE)
+//				.getString("pass", "")).start();
+		new SaveToServer(note).save();
+		Intent intent=new Intent(AddActivity.this,Main.class);
+		startActivity(intent);
 	}
     
 }
