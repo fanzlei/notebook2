@@ -11,7 +11,7 @@ import com.fragment.ShareFragment;
 import com.fragment.StarFragment;
 import com.fragment.TextFragment;
 import com.fragment.VideoFragment;
-import com.service.LoginThread;
+import com.net.CheckUser;
 import com.utils.JsonUtils;
 
 import android.animation.ValueAnimator;
@@ -128,7 +128,7 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 		SharedPreferences sp=this.getSharedPreferences("localSave", MODE_WORLD_READABLE);
 		name=sp.getString("name", "");
 		pass=sp.getString("pass", "");
-		new LoginThread(this,handler,name,pass).start();
+		new CheckUser(handler,name,pass).start();
 		protrait.setOnClickListener(new OnClickListener(){
 
 			@Override

@@ -1,4 +1,4 @@
-package com.service;
+package com.net;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,19 +16,18 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
-public class LoginThread  extends Thread{
+public class CheckUser  extends Thread{
 
 	Context context;
-	HttpClient httpClient;
+	HttpClient httpClient=new DefaultHttpClient();
 	HttpResponse response;
 	JsonUtils jsonUtils=new JsonUtils();
-	Handler handler;
 	String name;
 	String pass;
-	public LoginThread(Context context,Handler handler,String name,String pass){
-		// TODO Auto-generated constructor stub
-		this.context=context;
-		httpClient=new DefaultHttpClient();
+	boolean isChecked=false;
+	Handler handler;
+	
+	public CheckUser(Handler handler,String name,String pass){
 		this.handler=handler;
 		this.name=name;
 		this.pass=pass;
@@ -63,4 +62,8 @@ public class LoginThread  extends Thread{
 			e.printStackTrace();
 		}
 	}
+
+
+
+	
 }

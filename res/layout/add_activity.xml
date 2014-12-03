@@ -28,7 +28,14 @@
         android:layout_height="wrap_content"
         android:text="by fanz 2014.12.02"
         android:layout_below="@id/note_title"
-        android:id="@+id/author_date"/>    <ScrollView 
+        android:id="@+id/author_date"/>
+    <Spinner 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:entries="@array/note_type"
+        android:id="@+id/spinner"
+        android:spinnerMode="dropdown"
+        android:layout_toRightOf="@id/author_date"/>    <ScrollView 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/author_date"
@@ -76,7 +83,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_launcher"
-        android:onClick="add_save"
+        android:onClick="saveRecord"
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         />

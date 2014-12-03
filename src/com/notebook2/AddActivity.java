@@ -1,6 +1,10 @@
 package com.notebook2;
 
 import com.fanz.notebook2.R;
+import com.net.CheckUser;
+import com.net.SaveToServer;
+import com.utils.MySQLiteUtils;
+import com.utils.Note;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,11 +12,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
@@ -21,19 +30,44 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ScrollView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 public class AddActivity extends Activity{
 
 	EditText content;
+	EditText title;
 	boolean hasContent=false;
 	Context context;
 	final int RESULT_LOAD_IMAGE=13322;
 	final int REQUEST_CODE_CAMERA=23414;
+	Note note;
+	int type=1;
+	Handler handler=new Handler(){
+
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			super.handleMessage(msg);
+			if(msg.what==0x123){
+				if((Boolean) msg.obj){
+					//用户验证通过，保存note
+					new SaveToServer(note).save();
+				}else{
+					Toast.makeText(AddActivity.this, "登陆失败", Toast.LENGTH_SHORT).show();
+				}
+			}
+		}
+		
+	};
 	public AddActivity() {
 		// TODO Auto-generated constructor stub
 	}
@@ -45,6 +79,34 @@ public class AddActivity extends Activity{
 		setContentView(R.layout.add_activity);
 		context=this;
 		content=(EditText) findViewById(R.id.note_content_edit);
+		title=(EditText)findViewById(R.id.note_title);
+		Spinner spinner=(Spinner) findViewById(R.id.spinner);
+		spinner.setOnItemSelectedListener(new OnItemSelectedListener(){
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				switch(position){
+				case 0:
+					type=1;
+					break;
+				case 1:
+				    type=2;
+					break;
+				case 2:
+					type=3;
+					break;
+				}
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 	}
 
 	
@@ -69,7 +131,10 @@ public class AddActivity extends Activity{
             
             LinearLayout linearLayout=(LinearLayout)findViewById(R.id.note_content_ll);
             ImageView imageView=new ImageView(this);
-            imageView.setImageBitmap(bitmap);
+            Matrix m=new Matrix();
+            m.setScale(0.3f, 0.3f);
+            Bitmap newbitmap=Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(),m,true);
+            imageView.setImageBitmap(newbitmap);
             
             linearLayout.addView(imageView);
 		}
@@ -132,9 +197,6 @@ public class AddActivity extends Activity{
 	public void add_sound(View v){
 		System.out.println("获取录音");
 	}
-    public void add_save(View v){
-		System.out.println("保存记录");
-	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -157,7 +219,7 @@ public class AddActivity extends Activity{
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
-						saveRecord();
+						saveRecord(null);
 					}}).show();
 			}
 			
@@ -165,8 +227,27 @@ public class AddActivity extends Activity{
 		return super.onKeyDown(keyCode, event);
 	}
 
-	protected void saveRecord() {
+	public void saveRecord(View v) {
 		// TODO Auto-generated method stub
+		
+		note=new Note();
+		note.setUser_name(this.getSharedPreferences("localSave",MODE_WORLD_READABLE)
+				.getString("name", ""));
+		note.setPass(this.getSharedPreferences("localSave",MODE_WORLD_READABLE)
+				.getString("pass", ""));
+		note.setTitle(title.getText().toString().trim());
+		note.setContent(content.getText().toString().trim());
+		note.setType(type);
+		System.out.println("笔记创建");
+		boolean isSaveInSQLite=new MySQLiteUtils(this).saveNote(note);
+		if(isSaveInSQLite){
+			System.out.println("笔记成功保存到本地");
+		}else{System.out.println("笔记保存到本地失败");}
+		//执行验证用户名是否登陆成功，成功则保存到服务器
+		new CheckUser(handler,this.getSharedPreferences("localSave",MODE_WORLD_READABLE)
+				.getString("name", ""), 
+				this.getSharedPreferences("localSave",MODE_WORLD_READABLE)
+				.getString("pass", "")).start();
 		
 	}
     

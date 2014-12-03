@@ -12,7 +12,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreConnectionPNames;
 
 import com.fanz.notebook2.R;
-import com.service.LoginThread;
+import com.net.CheckUser;
 import com.utils.JsonUtils;
 import com.utils.SendEmail;
 
@@ -42,40 +42,31 @@ public class Login extends Activity {
     HttpResponse response=null;
     HttpClient httpClient=new DefaultHttpClient();
     JsonUtils jsonUtils=new JsonUtils();
-    public final  Handler handler=new Handler(){
+    Handler handler=new Handler(){
 
 		@Override
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
 			super.handleMessage(msg);
 			if(msg.what==0x123){
-				//登陆验证
-				if(msg.obj!=null){
-					if((Boolean)msg.obj){
-						SharedPreferences sp=getSharedPreferences("localSave",MODE_WORLD_READABLE );
-						SharedPreferences.Editor editor=sp.edit();
-						editor.putString("name", name);
-						editor.putString("pass", pass);
-						editor.commit();
-						Intent intent=new Intent(Login.this,Main.class);
-						startActivity(intent);
-					}else{
-						Toast.makeText(Login.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
-						Uri uri=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-						Ringtone r=RingtoneManager.getRingtone(Login.this, uri);
-						r.play();
-					}
-					
+				if((Boolean) msg.obj){
+					SharedPreferences sp=getSharedPreferences("localSave",MODE_WORLD_READABLE );
+					SharedPreferences.Editor editor=sp.edit();
+					editor.putString("name", name);
+					editor.putString("pass", pass);
+					editor.commit();
+					Intent intent=new Intent(Login.this,Main.class);
+					startActivity(intent);
 				}else{
-					Toast.makeText(Login.this, "服务器错误", Toast.LENGTH_SHORT).show();
+					Toast.makeText(Login.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
 					Uri uri=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 					Ringtone r=RingtoneManager.getRingtone(Login.this, uri);
 					r.play();
 				}
+				}
 			}
-		}
-    	
-    };
+			
+		};
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -100,7 +91,7 @@ public class Login extends Activity {
 		 name=Ename.getText().toString().trim();
 		    pass=Epass.getText().toString().trim();
 		if(!name.isEmpty()&&name!=null&&!pass.isEmpty()&&pass!=null){
-			new LoginThread(this,handler,name,pass).start();
+			new CheckUser(handler,name,pass).start();
 		}else{
 			Toast.makeText(Login.this, "用户名或密码为空", Toast.LENGTH_SHORT).show();
 		}

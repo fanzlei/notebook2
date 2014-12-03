@@ -18,6 +18,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
 import com.fanz.notebook2.R;
+import com.net.RegisterThread;
 import com.utils.JsonUtils;
 
 import android.app.Activity;
@@ -110,7 +111,7 @@ public class Register extends Activity{
 		if(name.length()>2 && pass.length()>3 &&phone.length()==11&&
 				email.matches("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*")
 				&&pass.equals(checkPass)){
-			new RegisterThread(name,pass,phone,email).start();
+			new RegisterThread(this,handler,name,pass,phone,email).start();
 		}else{
 			error.delete(0, error.length());
 			if(name.length()<=2){
@@ -134,55 +135,5 @@ public class Register extends Activity{
 				errorMsg.setText(error);
 			}
 		}
-	}
-	private class RegisterThread extends Thread{
-
-		String name;
-		String pass;
-		String phone;
-		String email;
-		HttpClient httpClient=new DefaultHttpClient();
-		HttpResponse response;
-		JsonUtils jsonUtils=new JsonUtils();
-		public RegisterThread(String name,String pass,String phone,String email) {
-			// TODO Auto-generated constructor stub
-			this.name=name;
-			this.pass=pass;
-			this.phone=phone;
-			this.email=email;
-		}
-
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			HttpPost post=new HttpPost("http://192.168.0.108:8080/Notebook2_service/Register");
-			try {
-		        List<NameValuePair> params=new ArrayList<NameValuePair>();
-		        params.add(new BasicNameValuePair("name",name));
-		        params.add(new BasicNameValuePair("pass",pass));
-		        params.add(new BasicNameValuePair("phone",phone));
-		        params.add(new BasicNameValuePair("email",email));
-				HttpEntity entity=new UrlEncodedFormEntity(params,HTTP.UTF_8);
-				post.setEntity(entity);
-				response=httpClient.execute(post);
-				if(response.getStatusLine().getStatusCode()==200){
-					InputStream is=response.getEntity().getContent();
-					
-					Message msg=new Message();
-					msg.what=0x123;
-					msg.obj=jsonUtils.checkRegister(is);
-					handler.sendMessage(msg);
-				}
-				
-			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		
 	}
 }

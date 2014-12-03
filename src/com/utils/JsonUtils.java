@@ -26,7 +26,7 @@ public class JsonUtils {
 			return false;
 		}
 	}
-	private String inputStreamToString(InputStream is){
+	public String inputStreamToString(InputStream is){
 		ByteArrayOutputStream os=new ByteArrayOutputStream();
 		byte[] data=new byte[1024];
 		int len=0;

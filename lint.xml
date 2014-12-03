@@ -9,5 +9,6 @@
     <issue id="NewApi">
         <ignore path="src/com/example/notebook2/Login.java" />
         <ignore path="src/com/example/notebook2/Main.java" />
+        <ignore path="src/com/notebook2/AddActivity.java" />
     </issue>
 </lint>

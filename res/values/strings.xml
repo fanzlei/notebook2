@@ -13,5 +13,9 @@
     <string name="phone">手机</string>
     <string name="email">邮箱</string>
     <string name="checkPass">确认密码</string>
-
+<string-array name="note_type">
+    <item>生活</item>
+    <item>工作</item>
+    <item>其他</item>
+</string-array>
 </resources>
