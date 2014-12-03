@@ -5,12 +5,8 @@ import java.util.TimerTask;
 
 import com.adapter.MyAdapter;
 import com.fanz.notebook2.R;
-import com.fragment.ImageFragment;
 import com.fragment.MyListFragment;
-import com.fragment.ShareFragment;
-import com.fragment.StarFragment;
-import com.fragment.TextFragment;
-import com.fragment.VideoFragment;
+
 import com.net.CheckUser;
 import com.utils.JsonUtils;
 
@@ -53,11 +49,7 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 	boolean isReadyExit=false;
 	GestureDetector detector;
 	MyListFragment listFragment=new MyListFragment();
-	ImageFragment imageFragment=new ImageFragment();
-	ShareFragment shareFragment=new ShareFragment();
-	StarFragment starFragment=new StarFragment();
-	TextFragment textFragment=new TextFragment();
-	VideoFragment videoFragment=new VideoFragment();
+	
 	ListView menuList;
 	int selectedPosition=100;
 	ImageButton protrait;
@@ -312,7 +304,7 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 				selectedPosition=1;
 				showRightPage();
 				setMenuItemSelectedBackgound(parent,position);				
-				getFragmentManager().beginTransaction().replace(R.id.container, textFragment).commit();
+				
 				break;
 			}
 			
@@ -322,7 +314,6 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 				selectedPosition=2;
 				showRightPage();
 				setMenuItemSelectedBackgound(parent,position);
-				getFragmentManager().beginTransaction().replace(R.id.container, videoFragment).commit();
 				break;
 			}
 		case 3:
@@ -331,7 +322,6 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 				selectedPosition=3;
 				showRightPage();
 				setMenuItemSelectedBackgound(parent,position);
-				getFragmentManager().beginTransaction().replace(R.id.container, imageFragment).commit();
 				break;
 			}
 		case 4:
@@ -340,7 +330,6 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 				selectedPosition=4;
 				showRightPage();
 				setMenuItemSelectedBackgound(parent,position);
-				getFragmentManager().beginTransaction().replace(R.id.container, starFragment).commit();
 				break;
 			}
 		case 5:
@@ -349,7 +338,6 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 				selectedPosition=5;
 				showRightPage();
 				setMenuItemSelectedBackgound(parent,position);
-				getFragmentManager().beginTransaction().replace(R.id.container, shareFragment).commit();
 				break;
 			}
 		
