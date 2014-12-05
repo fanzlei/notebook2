@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="账户信息"
+        android:textSize="25sp"
+        android:background="#F06848"
+        android:textStyle="bold"
+        android:gravity="center"/>
+    <Button 
+       
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Fanz"
+        android:clickable="true"
+        android:id="@+id/account_infromation"
+        android:onClick="click"/>
+    <Button 
+       
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="登陆"
+        android:clickable="true"
+        android:id="@+id/account_logout"
+        android:onClick="click"/>
+    <Button 
+       
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="修改个人信息"
+        android:clickable="true"
+        android:id="@+id/account_change_password"
+        android:onClick="click"/>
+
+    
+</LinearLayout>

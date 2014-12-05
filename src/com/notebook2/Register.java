@@ -54,6 +54,8 @@ public class Register extends Activity{
 					SharedPreferences.Editor editor=sp.edit();
 					editor.putString("name", name);
 					editor.putString("pass", pass);
+					editor.putString("phone", phone);
+					editor.putString("email", email);
 					editor.commit();
 					startActivity(intent);
 					

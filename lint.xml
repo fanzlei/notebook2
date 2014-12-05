@@ -2,6 +2,7 @@
 <lint>
     <issue id="HandlerLeak">
         <ignore path="src/com/example/notebook2/Login.java" />
+        <ignore path="src/com/notebook2/ModifyAccount.java" />
     </issue>
     <issue id="InflateParams">
         <ignore path="src/com/notebook2/AddActivity.java" />
@@ -10,5 +11,8 @@
         <ignore path="src/com/example/notebook2/Login.java" />
         <ignore path="src/com/example/notebook2/Main.java" />
         <ignore path="src/com/notebook2/AddActivity.java" />
+    </issue>
+    <issue id="WorldReadableFiles">
+        <ignore path="src/com/utils/MySQLiteUtils.java" />
     </issue>
 </lint>

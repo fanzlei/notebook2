@@ -3,9 +3,12 @@ package com.notebook2;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.adapter.MyAdapter;
 import com.fanz.notebook2.R;
-import com.fragment.MyListFragment;
+import com.listener.ListListener;
 import com.net.CheckUser;
 import com.utils.JsonUtils;
 
@@ -21,12 +24,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
@@ -48,10 +55,9 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 	boolean isShowLeft=false;
 	boolean isReadyExit=false;
 	GestureDetector detector;
-	MyListFragment listFragment=new MyListFragment();
+	ListView noteList;
 	
 	ListView menuList;
-	ListView fragmentList;
 	int selectedPosition=100;
 	ImageButton protrait;
 	boolean isLogined=false;
@@ -59,6 +65,10 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 	JsonUtils jsonUtils=new JsonUtils();
 	String name;
 	String pass;
+	int REQUEST_CODE=0x321;
+	ListListener listListener;
+	//保存当前显示的List是哪个，当从其他Activity回到这里是就显示原来的List
+	int nowShowList=0;
 	public final  Handler handler=new Handler(){
 
 		@Override
@@ -67,17 +77,25 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 			super.handleMessage(msg);
 			if(msg.what==0x123){
 				//登陆验证
+				
 				if(msg.obj!=null){
-					if((Boolean)msg.obj){
-						isLogined=true;
-						Toast.makeText(Main.this, "登陆成功", Toast.LENGTH_SHORT).show();
-						
-						main_user_name.setText(name);
-					}else{
-						Toast.makeText(Main.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
-						Uri uri=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-						Ringtone r=RingtoneManager.getRingtone(Main.this, uri);
-						r.play();
+					JSONObject jo=new JSONObject();
+					jo=(JSONObject) msg.obj;
+					try {
+						if(jo.getBoolean("isChecked")){
+							isLogined=true;
+							Toast.makeText(Main.this, "登陆成功", Toast.LENGTH_SHORT).show();
+							
+							main_user_name.setText(name);
+						}else{
+							Toast.makeText(Main.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
+							Uri uri=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+							Ringtone r=RingtoneManager.getRingtone(Main.this, uri);
+							r.play();
+						}
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 					
 				}else{
@@ -110,8 +128,20 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 		menuList=(ListView)findViewById(R.id.menuList);
 		menuList.setAdapter(new MyAdapter(this).getMenuAdapter());
 		menuList.setOnItemClickListener(this);
-		fragmentList=(ListView) findViewById(R.id.fragment_list);
-		this.getFragmentManager().beginTransaction().replace(R.id.container, listFragment).commit();
+		noteList=(ListView) findViewById(R.id.note_list);
+		noteList.setOnTouchListener(new OnTouchListener(){
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// TODO Auto-generated method stub
+				return detector.onTouchEvent(event);
+			}});
+		/*SimpleAdapter adapter= new MyAdapter(Main.this).getMyListAdapter();
+		noteList.setAdapter(adapter);
+		nowShowList=0;
+		listListener=new ListListener(this,nowShowList);
+		noteList.setOnItemClickListener(listListener);
+		noteList.setOnItemLongClickListener(listListener);*/
 		showLeft.setOnClickListener(new OnClickListener(){
 
 			@Override
@@ -119,7 +149,7 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 				// TODO Auto-generated method stub
 				showLeftPage();
 			}});
-		detector=new GestureDetector(this, this);
+		detector=new GestureDetector(this,this);
 		SharedPreferences sp=this.getSharedPreferences("localSave", MODE_WORLD_READABLE);
 		name=sp.getString("name", "");
 		pass=sp.getString("pass", "");
@@ -130,11 +160,11 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				if(isLogined){
-					Intent intent =new Intent(Main.this,AccountInformation.class);
+					Intent intent =new Intent(Main.this,Account.class);
 					startActivity(intent);
 				}else{
 					Intent intent =new Intent(Main.this,Login.class);
-					startActivity(intent);
+					startActivityForResult(intent,REQUEST_CODE);
 				}
 			}
 			
@@ -145,15 +175,49 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				if(isLogined){
-					Intent intent =new Intent(Main.this,AccountInformation.class);
+					Intent intent =new Intent(Main.this,Account.class);
 					startActivity(intent);
 				}else{
 					Intent intent =new Intent(Main.this,Login.class);
-					startActivity(intent);
+					startActivityForResult(intent,REQUEST_CODE);
 				}
 			}
 			
 		});
+	}
+	
+	
+		
+	
+	
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		SimpleAdapter adapter= new MyAdapter(Main.this).getMyListAdapter();
+		noteList.setAdapter(adapter);
+		nowShowList=0;
+		listListener=new ListListener(this,nowShowList);
+		noteList.setOnItemClickListener(listListener);
+		noteList.setOnItemLongClickListener(listListener);
+	}
+
+
+
+
+
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode==REQUEST_CODE&&resultCode==0){
+			//由登陆界面跳转到本Activity
+			main_user_name.setText(data.getExtras().getString("name"));
+			
+		}
+		
 	}
 
 	public void showRightPage(){
@@ -198,12 +262,7 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		// TODO Auto-generated method stub
-		if(event.getX()>(int)screenWidth-200){
-			
-			showRightPage();
-		}
-		
+		// TODO Auto-generated method stub	
 		return detector.onTouchEvent(event);
 	}
 
@@ -298,7 +357,11 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 				showRightPage();
 				setMenuItemSelectedBackgound(parent,position);
 				SimpleAdapter adapter= new MyAdapter(Main.this).getMyListAdapter();
-				fragmentList.setAdapter(adapter);
+				noteList.setAdapter(adapter);
+				nowShowList=0;
+				listListener=new ListListener(this,nowShowList);
+				noteList.setOnItemClickListener(listListener);
+				noteList.setOnItemLongClickListener(listListener);
 				break;
 			}
 			
@@ -309,7 +372,11 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 				showRightPage();
 				setMenuItemSelectedBackgound(parent,position);				
 				SimpleAdapter adapter= new MyAdapter(Main.this).getLiftAdapter();
-				fragmentList.setAdapter(adapter);
+				noteList.setAdapter(adapter);
+				nowShowList=1;
+				listListener=new ListListener(this,nowShowList);
+				noteList.setOnItemClickListener(listListener);
+				noteList.setOnItemLongClickListener(listListener);
 				break;
 			}
 			
@@ -320,7 +387,11 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 				showRightPage();
 				setMenuItemSelectedBackgound(parent,position);
 				SimpleAdapter adapter= new MyAdapter(Main.this).getWorkAdapter();
-				fragmentList.setAdapter(adapter);
+				noteList.setAdapter(adapter);
+				nowShowList=2;
+				listListener=new ListListener(this,nowShowList);
+				noteList.setOnItemClickListener(listListener);
+				noteList.setOnItemLongClickListener(listListener);
 				break;
 			}
 		case 3:
@@ -330,7 +401,11 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 				showRightPage();
 				setMenuItemSelectedBackgound(parent,position);
 				SimpleAdapter adapter= new MyAdapter(Main.this).getOtherAdapter();
-				fragmentList.setAdapter(adapter);
+				noteList.setAdapter(adapter);
+				nowShowList=3;
+				listListener=new ListListener(this,nowShowList);
+				noteList.setOnItemClickListener(listListener);
+				noteList.setOnItemLongClickListener(listListener);
 				break;
 			}
 		case 4:
@@ -339,6 +414,7 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 				selectedPosition=4;
 				showRightPage();
 				setMenuItemSelectedBackgound(parent,position);
+				noteList.setAdapter(null);
 				break;
 			}
 		case 5:
@@ -347,6 +423,7 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 				selectedPosition=5;
 				showRightPage();
 				setMenuItemSelectedBackgound(parent,position);
+				noteList.setAdapter(null);
 				break;
 			}
 		

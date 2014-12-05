@@ -68,32 +68,150 @@ public class MyAdapter {
 
 	public SimpleAdapter getMyListAdapter() {
 		// TODO Auto-generated method stub
-		MySQLiteHelper helper=new MySQLiteHelper(context, "user_notebook", null, 3);
+		List<Map<String,String>> list=new ArrayList<Map<String,String>>();
+		
+		MySQLiteHelper helper=new MySQLiteHelper(context, "user_notebook", null, 4);
 		SQLiteDatabase db= helper.getReadableDatabase();
 		String sql="select * from user_notebook where name=?";
 		String name=context.getSharedPreferences("localSave", context.MODE_WORLD_READABLE ).getString("name", "");
 		Cursor cursor= db.rawQuery(sql, new String[]{name});
-		//未完待续
+		int i=1;
+		cursor.moveToLast();
+		while(cursor.moveToPrevious()){
+			cursor.moveToNext();
+			String nam=cursor.getString(2);
+	    	String title=cursor.getString(3);
+	    	String content=cursor.getString(4);
+	    	String date=cursor.getString(5);
+	    	if(content.length()>30){
+	    		content=content.substring(0, 30);
+	    	}
+	    	Map<String,String> map=new HashMap<String,String>();
+	    	map.put("title", title);
+	    	map.put("date", "by "+nam+' '+date);
+	    	//summary显示前30个字符
+	    	map.put("summary", content);
+	    	list.add(map);
+	    	cursor.moveToPrevious();
+		}
+		SimpleAdapter adapter=new SimpleAdapter(context, list, R.layout.note_item,
+				new String[]{"title","date","summary"},
+				new int[]{R.id.note_item_title,R.id.note_item_date,R.id.note_item_summary});
 		
 		
 		
-		
-		
-		return null;
+		return adapter;
 	}
 
 	public SimpleAdapter getLiftAdapter() {
 		// TODO Auto-generated method stub
-		return null;
+List<Map<String,String>> list=new ArrayList<Map<String,String>>();
+		
+		MySQLiteHelper helper=new MySQLiteHelper(context, "user_notebook", null, 4);
+		SQLiteDatabase db= helper.getReadableDatabase();
+		String sql="select * from user_notebook where name=? and type='1"
+				+ "'";
+		String name=context.getSharedPreferences("localSave", context.MODE_WORLD_READABLE ).getString("name", "");
+		Cursor cursor= db.rawQuery(sql, new String[]{name});
+		//未完待续
+		cursor.moveToLast();
+		while(cursor.moveToPrevious()){
+			cursor.moveToNext();
+			String nam=cursor.getString(2);
+	    	String title=cursor.getString(3);
+	    	String content=cursor.getString(4);
+	    	String date=cursor.getString(5);
+	    	if(content.length()>30){
+	    		content=content.substring(0, 30);
+	    	}
+	    	Map<String,String> map=new HashMap<String,String>();
+	    	map.put("title", title);
+	    	map.put("date", "by "+nam+' '+date);
+	    	//summary显示前30个字符
+	    	map.put("summary", content);
+	    	list.add(map);
+	    	cursor.moveToPrevious();
+		}
+		SimpleAdapter adapter=new SimpleAdapter(context, list, R.layout.note_item,
+				new String[]{"title","date","summary"},
+				new int[]{R.id.note_item_title,R.id.note_item_date,R.id.note_item_summary});
+		
+		
+		
+		return adapter;
 	}
 
 	public SimpleAdapter getWorkAdapter() {
 		// TODO Auto-generated method stub
-		return null;
-	}
+List<Map<String,String>> list=new ArrayList<Map<String,String>>();
+		
+		MySQLiteHelper helper=new MySQLiteHelper(context, "user_notebook", null,4);
+		SQLiteDatabase db= helper.getReadableDatabase();
+		String sql="select * from user_notebook where name=? and type=?";
+		String name=context.getSharedPreferences("localSave", context.MODE_WORLD_READABLE ).getString("name", "");
+		Cursor cursor= db.rawQuery(sql, new String[]{name,"2"});
+		//未完待续
+		cursor.moveToLast();
+		while(cursor.moveToPrevious()){
+			cursor.moveToNext();
+			String nam=cursor.getString(2);
+	    	String title=cursor.getString(3);
+	    	String content=cursor.getString(4);
+	    	String date=cursor.getString(5);
+	    	if(content.length()>30){
+	    		content=content.substring(0, 30);
+	    	}
+	    	Map<String,String> map=new HashMap<String,String>();
+	    	map.put("title", title);
+	    	map.put("date", "by "+nam+' '+date);
+	    	//summary显示前30个字符
+	    	map.put("summary", content);
+	    	list.add(map);
+	    	cursor.moveToPrevious();
+		}
+		SimpleAdapter adapter=new SimpleAdapter(context, list, R.layout.note_item,
+				new String[]{"title","date","summary"},
+				new int[]{R.id.note_item_title,R.id.note_item_date,R.id.note_item_summary});
+		
+		
+		
+		return adapter;
+		}
 
 	public SimpleAdapter getOtherAdapter() {
 		// TODO Auto-generated method stub
-		return null;
-	}
+List<Map<String,String>> list=new ArrayList<Map<String,String>>();
+		
+		MySQLiteHelper helper=new MySQLiteHelper(context, "user_notebook", null, 4);
+		SQLiteDatabase db= helper.getReadableDatabase();
+		String sql="select * from user_notebook where name=? and type=?";
+		String name=context.getSharedPreferences("localSave", context.MODE_WORLD_READABLE ).getString("name", "");
+		Cursor cursor= db.rawQuery(sql, new String[]{name,"3"});
+		//未完待续
+		cursor.moveToLast();
+		while(cursor.moveToPrevious()){
+			cursor.moveToNext();
+			String nam=cursor.getString(2);
+	    	String title=cursor.getString(3);
+	    	String content=cursor.getString(4);
+	    	String date=cursor.getString(5);
+	    	if(content.length()>30){
+	    		content=content.substring(0, 30);
+	    	}
+	    	Map<String,String> map=new HashMap<String,String>();
+	    	map.put("title", title);
+	    	map.put("date", "by "+nam+' '+date);
+	    	//summary显示前30个字符
+	    	map.put("summary", content);
+	    	list.add(map);
+	    	cursor.moveToPrevious();
+	    	//System.out.println("查询到："+title+'\n'+date+'\n'+content);
+		}
+		SimpleAdapter adapter=new SimpleAdapter(context, list, R.layout.note_item,
+				new String[]{"title","date","summary"},
+				new int[]{R.id.note_item_title,R.id.note_item_date,R.id.note_item_summary});
+		
+		
+		
+		return adapter;	}
 }

@@ -16,6 +16,7 @@ public class Note {
 	String title;
 	String content;
 	String date;
+	int id;
 	JSONObject jsonObject;
 	int type=0;
 	public Note(InputStream is) {
@@ -98,5 +99,13 @@ public class Note {
 		// TODO Auto-generated method stub
 		this.pass=pass;
 	}
-	
+	public void setDate(String date){
+		this.date=date;
+	}
+	public void setId(int id){
+		this.id=id;
+	}
+	public int getId(){
+		return id;
+	};
 }

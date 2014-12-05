@@ -28,7 +28,10 @@
         <activity android:name="com.notebook2.Login"></activity>
         <activity android:name="com.notebook2.ConfigurationActivity"></activity>
         <activity android:name="com.notebook2.AddActivity"/>
-        <activity android:name="com.notebook2.AccountInformation"/>
+        <activity android:name="com.notebook2.Account"/>
+        <activity android:name="com.notebook2.NoteDetail"></activity>
+        <activity android:name="com.notebook2.AccountInformation"></activity>
+        <activity android:name="com.notebook2.ModifyAccount"/>
     </application>
 
 </manifest>

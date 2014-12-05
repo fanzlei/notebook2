@@ -13,8 +13,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 		// TODO Auto-generated constructor stub
 	}
 
-	String CREATE_TABLE="create table user_notebook(id integer primary key autoincrement,name,title,content,date,type);";
-	
+	String CREATE_TABLE="create table user_notebook(id integer primary key autoincrement,serverid integer,name,title,content,date,type);";
+	String UPDATE_TABLE="alter table user_notebook add column user_notebookcol integer NULL";
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		// TODO Auto-generated method stub
@@ -25,8 +25,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// TODO Auto-generated method stub
-		String sql="ALTER TABLE user_notebook ADD COLUMN `type` VARCHAR(45) NULL";
-		db.execSQL(sql);
+		
+		db.execSQL(UPDATE_TABLE);
+		System.out.println("修改数据库结构成功");
 	}
 
 }

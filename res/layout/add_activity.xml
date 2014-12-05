@@ -7,7 +7,7 @@
         android:layout_height="wrap_content"
         android:text="添加记录"
         android:textSize="30sp"
-        android:background="#7D6554"
+        android:background="#F06848"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:id="@+id/add_label"
@@ -63,29 +63,29 @@
    <RelativeLayout 
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:background="#A99485"
+       android:background="#3DC81D"
        android:layout_alignParentBottom="true"
        >
        
-    <ImageButton 
+    <Button 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_launcher"
         android:onClick="add_picture"
+        android:text="图片"
         android:layout_marginLeft="10dp"
         />
-    <ImageButton 
+    <Button 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_launcher"
         android:onClick="add_sound"
+        android:text="声音"
         android:layout_centerHorizontal="true"
        />
-    <ImageButton 
+    <Button 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_launcher"
         android:onClick="saveRecord"
+        android:text="保存"
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         />

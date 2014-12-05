@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+         <EditText 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/note_detail_title"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:gravity="center_horizontal"
+        android:text="无标题"
+        
+        />
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/note_detail_date"
+        android:layout_below="@id/note_detail_title"
+        android:text="by fanz 2014.12.04"/>
+    <EditText 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/note_detail_content"
+        android:text="今天很幸福"
+        android:layout_below="@id/note_detail_date"
+        android:textSize="20sp"/>
+    <RelativeLayout 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:background="#44AC56">
+    <Button 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="返回"
+        android:layout_marginLeft="50dp"
+        android:id="@+id/note_detail_back"
+        android:onClick="clickButton"/>
+    <Button 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="保存"
+        android:id="@+id/note_detail_save"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="50dp"
+        android:onClick="clickButton"/>
+   
+</RelativeLayout>
+</RelativeLayout>

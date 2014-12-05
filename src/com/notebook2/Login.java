@@ -10,6 +10,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreConnectionPNames;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.fanz.notebook2.R;
 import com.net.CheckUser;
@@ -49,19 +51,33 @@ public class Login extends Activity {
 			// TODO Auto-generated method stub
 			super.handleMessage(msg);
 			if(msg.what==0x123){
-				if((Boolean) msg.obj){
-					SharedPreferences sp=getSharedPreferences("localSave",MODE_WORLD_READABLE );
-					SharedPreferences.Editor editor=sp.edit();
-					editor.putString("name", name);
-					editor.putString("pass", pass);
-					editor.commit();
-					Intent intent=new Intent(Login.this,Main.class);
-					startActivity(intent);
-				}else{
-					Toast.makeText(Login.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
-					Uri uri=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-					Ringtone r=RingtoneManager.getRingtone(Login.this, uri);
-					r.play();
+				JSONObject jo=new JSONObject();
+				jo=(JSONObject) msg.obj;
+				System.out.println("登陆成功，服务器返回jsonString:'"+jo.toString()+"'");
+				try {
+					if(jo.getBoolean("isChecked")){
+						SharedPreferences sp=getSharedPreferences("localSave",MODE_WORLD_READABLE );
+						SharedPreferences.Editor editor=sp.edit();
+						editor.putString("name", name);
+						editor.putString("pass", pass);
+						editor.putString("phone", jo.getString("phone"));
+						editor.putString("email", jo.getString("email"));
+						editor.commit();
+						Intent intent=new Intent(Login.this,Main.class);
+						intent.putExtra("name", name);
+						Login.this.setResult(0, intent);
+						Intent intnt=new Intent(Login.this,Main.class);
+						startActivity(intnt);
+						Login.this.finish();
+					}else{
+						Toast.makeText(Login.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
+						Uri uri=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+						Ringtone r=RingtoneManager.getRingtone(Login.this, uri);
+						r.play();
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 				}
 			}

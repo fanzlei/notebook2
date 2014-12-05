@@ -14,16 +14,16 @@ public class JsonUtils {
 		// TODO Auto-generated constructor stub
 	}
 
-	public boolean checkUser(InputStream is){
+	public JSONObject checkUser(InputStream is){
 		String JsonString=inputStreamToString(is);
 		try {
 			JSONObject jb=new JSONObject(JsonString);
 			System.out.println("服务器返回密码验证结果："+jb.getBoolean("isChecked"));
-			return jb.getBoolean("isChecked");
+			return jb;
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+			return null;
 		}
 	}
 	public String inputStreamToString(InputStream is){

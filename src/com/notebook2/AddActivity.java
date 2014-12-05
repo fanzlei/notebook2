@@ -228,28 +228,21 @@ public class AddActivity extends Activity{
 
 	public void saveRecord(View v) {
 		// TODO Auto-generated method stub
-		
 		note=new Note();
 		note.setUser_name(this.getSharedPreferences("localSave",MODE_WORLD_READABLE)
 				.getString("name", ""));
 		note.setPass(this.getSharedPreferences("localSave",MODE_WORLD_READABLE)
 				.getString("pass", ""));
-		note.setTitle(title.getText().toString().trim());
-		note.setContent(content.getText().toString().trim());
+		note.setTitle(title.getText().toString());
+		note.setContent(content.getText().toString());
 		note.setType(type);
-		System.out.println("笔记创建");
-		boolean isSaveInSQLite=new MySQLiteUtils(this).saveNote(note);
-		if(isSaveInSQLite){
-			System.out.println("笔记成功保存到本地");
-		}else{System.out.println("笔记保存到本地失败");}
-		//执行验证用户名是否登陆成功，成功则保存到服务器
-//		new CheckUser(handler,this.getSharedPreferences("localSave",MODE_WORLD_READABLE)
-//				.getString("name", ""), 
-//				this.getSharedPreferences("localSave",MODE_WORLD_READABLE)
-//				.getString("pass", "")).start();
-		new SaveToServer(note).save();
-		Intent intent=new Intent(AddActivity.this,Main.class);
-		startActivity(intent);
-	}
+			boolean isSaveInSQLite=new MySQLiteUtils(this).saveNote(note);
+			if(isSaveInSQLite){
+				System.out.println("笔记成功保存到本地");
+			}else{System.out.println("笔记保存到本地失败");}
+			new SaveToServer(note,this).start();
+			Intent intent=new Intent(AddActivity.this,Main.class);
+			startActivity(intent);
+		}
     
 }
