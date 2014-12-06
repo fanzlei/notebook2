@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:background="#BDB6AF">
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="关于我们"
+        android:textSize="30sp"
+        android:background="#F06848"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:id="@+id/add_label"
+        android:gravity="center_horizontal"
+        android:textStyle="italic"/>
+
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="20sp"
+        android:text="名称：UU记事本\n开发者：fanz\n邮箱：fanz_lei@126.com\nQQ：991135035\n备注：学习Android开发中，欢迎大家与我交流,本软件仅用于开发交流，未经允许不得用于其他用途"/>
+</LinearLayout>

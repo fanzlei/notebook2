@@ -1,10 +1,17 @@
 package com.utils;
 
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.notebook2.AddActivity;
 import com.notebook2.Main;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -40,14 +47,19 @@ public class MySQLiteUtils {
 			return false;
 		}
 	}
-	public void saveNoteServerID(int serverID){
+	public void saveNoteServerID(Note note,int serverID){
+		//note的id是数据库自动创建的，现在这个note只带数据，没有id
 		db=helper.getReadableDatabase();
-		Cursor cursor=db.rawQuery("select * from user_notebook", null);
+		
+		Cursor cursor= db.rawQuery("select id from user_notebook", null);
 		cursor.moveToLast();
 		int id=cursor.getInt(0);
+		System.out.println("SQLite中最后一个note的id为："+id);
 		String sql="update user_notebook set serverid='"+serverID+"' where id='"+id+"'";
 		db.execSQL(sql);
-		System.out.println("成功保存ServerID");
+		System.out.println("保存并获得serverid，该note为：\nid=SQLite自动创建"+"\nname="+note.getUser_name()
+				+"\ntitle="+note.getTitle()+"content="+note.getContent()+"\ndate="+note.getDate()
+				+"\ntype="+note.getType()+"\nserverId="+note.getServerId());
 	}
 	public Note getNoteAt(int type,int position){
 		db=helper.getReadableDatabase();
@@ -67,6 +79,7 @@ public class MySQLiteUtils {
 				note.setType(cursor.getShort(6));
 				note.setDate(cursor.getString(5));
 				note.setId(cursor.getInt(0));
+				note.setServerId(cursor.getString(1));
 				return note;
 			}else{
 				String thisType=String.valueOf(type);
@@ -82,6 +95,7 @@ public class MySQLiteUtils {
 				note.setType(cursor.getShort(6));
 				note.setDate(cursor.getString(5));
 				note.setId(cursor.getInt(0));
+				note.setServerId(cursor.getString(1));
 				return note;
 				
 			}
@@ -95,14 +109,61 @@ public class MySQLiteUtils {
 		int id=note.getId();
 		String title=note.getTitle();
 		String content=note.getContent();
+		String date=new Date(System.currentTimeMillis()).toLocaleString();
 		System.out.println("修改后的note为：id="+id+"\ttitle="+title+"\tcontent="+content);
-		String sql="update user_notebook set title='"+title+"',content='"+content+"' where id='"+note.getId()+"'";
+		String sql="update user_notebook set title='"+title+"',date='"+date+"',content='"+content+"' where id='"+note.getId()+"'";
 		db=helper.getReadableDatabase();
 		db.execSQL(sql);
 		System.out.println("更新note成功");
 		Intent intent=new Intent(context,Main.class);
 		context.startActivity(intent);
 	}
+
+
+
+	public void deleteNote(Note note) {
+		// TODO Auto-generated method stub
+		String sql="delete from user_notebook where id='"+note.getId()+"'";
+		db=helper.getReadableDatabase();
+		db.execSQL(sql);
+		if(note.getServerId()!=null&&note.getServerId()!=""){
+			//删除某个note的时候记录下这个note的serverId，同步的时候让服务器删除该note。无网络下删除note同步是也能删除该note
+			SharedPreferences sp= context.getSharedPreferences("localSave", context.MODE_WORLD_READABLE);
+			SharedPreferences.Editor editor=sp.edit();
+			Set<String> set;
+		    set= sp.getStringSet("deletedNote", new HashSet<String>());
+		    set.add(note.getServerId());
+		    editor.putStringSet("deletedNote", set);
+		    editor.commit();
+		}
+		
+		System.out.println("删除note成功，该note的ID为："+note.getId()+"serverId为："+note.getServerId());
+	}
+
+
+
+	/*public List<Note> getAllNote() {
+		// TODO Auto-generated method stub
+		db=helper.getReadableDatabase();
+		List<Note> list=new ArrayList<Note>();
+		SharedPreferences sp=context.getSharedPreferences("localSave", context.MODE_WORLD_READABLE);
+	    SharedPreferences.Editor editor=sp.edit();
+		String name=context.getSharedPreferences("localSave", context.MODE_WORLD_READABLE).getString("name", "");
+		String sql="select * from user_notebook where name='"+name+"'";
+		Cursor cursor=db.rawQuery(sql, null);
+		while(cursor.moveToNext()){
+			Note note=new Note();
+			note.setId(cursor.getInt(0));
+			note.setServerId(cursor.getString(1));
+			note.setUser_name(cursor.getString(2));
+			note.setTitle(cursor.getString(3));
+			note.setContent(cursor.getString(4));
+			note.setDate(cursor.getString(5));
+			note.setType(Integer.valueOf(cursor.getString(6)));
+			list.add(note);
+		}
+		return list;
+	}*/
 		
 	
 }

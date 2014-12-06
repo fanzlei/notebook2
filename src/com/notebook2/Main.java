@@ -47,7 +47,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Main extends Activity implements OnGestureListener, OnItemClickListener{
+public class Main extends Activity implements  OnItemClickListener{
 
 	LinearLayout rightPage;
 	RelativeLayout leftPage;
@@ -59,9 +59,7 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 	
 	ListView menuList;
 	int selectedPosition=100;
-	ImageButton protrait;
 	boolean isLogined=false;
-	TextView main_user_name;
 	JsonUtils jsonUtils=new JsonUtils();
 	String name;
 	String pass;
@@ -77,8 +75,6 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 			super.handleMessage(msg);
 			if(msg.what==0x123){
 				//登陆验证
-				
-				if(msg.obj!=null){
 					JSONObject jo=new JSONObject();
 					jo=(JSONObject) msg.obj;
 					try {
@@ -86,7 +82,6 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 							isLogined=true;
 							Toast.makeText(Main.this, "登陆成功", Toast.LENGTH_SHORT).show();
 							
-							main_user_name.setText(name);
 						}else{
 							Toast.makeText(Main.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
 							Uri uri=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -96,17 +91,13 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					}
-					
-				}else{
-					Toast.makeText(Main.this, "服务器错误", Toast.LENGTH_SHORT).show();
-					Uri uri=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-					Ringtone r=RingtoneManager.getRingtone(Main.this, uri);
-					r.play();
-				}
-			}
-		}
-    	
+					}}
+			if(msg.what==0x124){
+				Toast.makeText(Main.this, "服务器错误", Toast.LENGTH_SHORT).show();
+				Uri uri=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+				Ringtone r=RingtoneManager.getRingtone(Main.this, uri);
+				r.play();}	
+			}	
     };
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -121,21 +112,12 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 		DisplayMetrics metrics=new DisplayMetrics();
 		this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		screenWidth=metrics.widthPixels;
-		main_user_name=(TextView) findViewById(R.id.main_user_name);
-		protrait=(ImageButton) findViewById(R.id.protrait);
 		ImageButton showLeft=(ImageButton) findViewById(R.id.showLeft);
 		//侧滑菜单设置监听器和适配器
 		menuList=(ListView)findViewById(R.id.menuList);
 		menuList.setAdapter(new MyAdapter(this).getMenuAdapter());
 		menuList.setOnItemClickListener(this);
 		noteList=(ListView) findViewById(R.id.note_list);
-		noteList.setOnTouchListener(new OnTouchListener(){
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				// TODO Auto-generated method stub
-				return detector.onTouchEvent(event);
-			}});
 		/*SimpleAdapter adapter= new MyAdapter(Main.this).getMyListAdapter();
 		noteList.setAdapter(adapter);
 		nowShowList=0;
@@ -149,41 +131,12 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 				// TODO Auto-generated method stub
 				showLeftPage();
 			}});
-		detector=new GestureDetector(this,this);
 		SharedPreferences sp=this.getSharedPreferences("localSave", MODE_WORLD_READABLE);
 		name=sp.getString("name", "");
 		pass=sp.getString("pass", "");
 		new CheckUser(handler,name,pass).start();
-		protrait.setOnClickListener(new OnClickListener(){
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				if(isLogined){
-					Intent intent =new Intent(Main.this,Account.class);
-					startActivity(intent);
-				}else{
-					Intent intent =new Intent(Main.this,Login.class);
-					startActivityForResult(intent,REQUEST_CODE);
-				}
-			}
-			
-		});
-		main_user_name.setOnClickListener(new OnClickListener(){
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				if(isLogined){
-					Intent intent =new Intent(Main.this,Account.class);
-					startActivity(intent);
-				}else{
-					Intent intent =new Intent(Main.this,Login.class);
-					startActivityForResult(intent,REQUEST_CODE);
-				}
-			}
-			
-		});
+		
+		
 	}
 	
 	
@@ -214,7 +167,6 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 		super.onActivityResult(requestCode, resultCode, data);
 		if(requestCode==REQUEST_CODE&&resultCode==0){
 			//由登陆界面跳转到本Activity
-			main_user_name.setText(data.getExtras().getString("name"));
 			
 		}
 		
@@ -259,13 +211,6 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 		anim.start();
 		
 	}
-
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		// TODO Auto-generated method stub	
-		return detector.onTouchEvent(event);
-	}
-
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
@@ -299,52 +244,6 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 		}
 		return true;
 	}
-
-	@Override
-	public boolean onDown(MotionEvent e) {
-		// TODO Auto-generated method stub
-		
-		return false;
-	}
-
-	@Override
-	public void onShowPress(MotionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean onSingleTapUp(MotionEvent e) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-			float distanceY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void onLongPress(MotionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-			float velocityY) {
-		// TODO Auto-generated method stub
-		if(e2.getX()>e1.getX()){
-			showLeftPage();
-		}else{
-			showRightPage();
-		}
-		
-		return true;
-	}
-
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
@@ -450,7 +349,14 @@ public class Main extends Activity implements OnGestureListener, OnItemClickList
 	}
 	//执行同步操作
 	public void sync(View v){
-		Toast.makeText(Main.this, "开始同步", Toast.LENGTH_SHORT).show();
+		if(isLogined){
+			Toast.makeText(Main.this, "开始同步", Toast.LENGTH_SHORT).show();
+			Intent intent=new Intent("com.fanz.syncService");
+			intent.putExtra("name", name);
+			startService(intent);
+		}else{
+			Toast.makeText(Main.this, "请先登陆", Toast.LENGTH_SHORT).show();
+		}
 	}
 	
 }

@@ -1,11 +1,17 @@
 package com.listener;
 
+import com.fanz.notebook2.R;
 import com.notebook2.NoteDetail;
+import com.utils.MySQLiteHelper;
 import com.utils.MySQLiteUtils;
 import com.utils.Note;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -38,8 +44,29 @@ public class ListListener implements OnItemClickListener, OnItemLongClickListene
 			int position, long id) {
 		// TODO Auto-generated method stub
 		
+		PopupMenu pop=new PopupMenu(context, view);
+		pop.inflate(R.menu.note_long_click);
+		pop.show();
+		MySQLiteUtils sqlUtil=new MySQLiteUtils(context);
+		final Note note= sqlUtil.getNoteAt(nowShowList, position);
+		pop.setOnMenuItemClickListener(new OnMenuItemClickListener(){
+
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {
+				// TODO Auto-generated method stub
+				switch(arg0.getItemId()){
+				case R.id.popupMenu_delete:
+					new MySQLiteUtils(context).deleteNote(note);
+					break;
+				case R.id.popupMenu_addStar:
+					
+					break;
+				}
+				
+				return false;
+			}});
 		
-		return false;
+		return true;
 	}
 
 }

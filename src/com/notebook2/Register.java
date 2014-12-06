@@ -63,7 +63,9 @@ public class Register extends Activity{
 					Toast.makeText(Register.this, "用户名已经存在", Toast.LENGTH_SHORT).show();
 				}
 			}
-			
+			if(msg.what==0x124){
+				Toast.makeText(Register.this, "服务器错误", Toast.LENGTH_SHORT).show();
+			}
 		}
 		
 	};

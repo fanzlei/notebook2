@@ -14,6 +14,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.protocol.HTTP;
 
 import android.content.Context;
@@ -53,6 +54,7 @@ public class RegisterThread extends Thread{
 	        params.add(new BasicNameValuePair("phone",phone));
 	        params.add(new BasicNameValuePair("email",email));
 			HttpEntity entity=new UrlEncodedFormEntity(params,HTTP.UTF_8);
+			httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT,  2000);
 			post.setEntity(entity);
 			response=httpClient.execute(post);
 			if(response.getStatusLine().getStatusCode()==200){
@@ -70,6 +72,7 @@ public class RegisterThread extends Thread{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			handler.sendEmptyMessage(0x124);
 		}
 	}
 

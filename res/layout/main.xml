@@ -105,23 +105,6 @@
                 android:text="上次同步："
                 android:layout_gravity="center_horizontal|bottom"/>
         </LinearLayout>
-        <ImageButton 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/protrait"
-            android:src="@drawable/ic_launcher"
-            android:layout_above="@id/bottom"
-            android:background="@null"/>
-        <TextView 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/main_user_name"
-            android:layout_toRightOf="@id/protrait"
-            android:layout_above="@id/bottom"
-            android:textSize="20sp"
-            android:gravity="center_vertical"
-            android:textColor="#BB5F0B"
-            android:clickable="true"
-            />
+      
     </RelativeLayout>
 </FrameLayout>

@@ -32,6 +32,8 @@
         <activity android:name="com.notebook2.NoteDetail"></activity>
         <activity android:name="com.notebook2.AccountInformation"></activity>
         <activity android:name="com.notebook2.ModifyAccount"/>
+        <activity android:name="com.notebook2.Versions"></activity>
+        <service android:name="com.fanz.syncService"></service>
     </application>
 
 </manifest>

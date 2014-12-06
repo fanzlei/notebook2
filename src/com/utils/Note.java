@@ -19,6 +19,7 @@ public class Note {
 	int id;
 	JSONObject jsonObject;
 	int type=0;
+	String serverId="";
 	public Note(InputStream is) {
 		// TODO Auto-generated constructor stub
 		try {
@@ -28,7 +29,7 @@ public class Note {
 			pass=jsonObject.getString("pass");
 			title=jsonObject.getString("title");
 			content=jsonObject.getString("content");
-			date=new Date(System.currentTimeMillis()).toString();
+			date=new Date(System.currentTimeMillis()).toLocaleString();
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -39,10 +40,10 @@ public class Note {
 		this.pass=pass;
 		this.title=title;
 		this.content=content;
-		this.date=new Date(System.currentTimeMillis()).toString();
+		this.date=new Date(System.currentTimeMillis()).toLocaleString();
 	}
 	public Note(){
-		this.date=new Date(System.currentTimeMillis()).toString();
+		this.date=new Date(System.currentTimeMillis()).toLocaleString();
 	}
 	public String getUser_name() {
 		return user_name;
@@ -107,5 +108,11 @@ public class Note {
 	}
 	public int getId(){
 		return id;
-	};
+	}
+	public void setServerId(String serverId){
+		this.serverId=serverId;
+	}
+	public String getServerId(){
+		return serverId;
+	}
 }

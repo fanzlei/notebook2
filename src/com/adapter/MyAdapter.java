@@ -113,7 +113,6 @@ List<Map<String,String>> list=new ArrayList<Map<String,String>>();
 				+ "'";
 		String name=context.getSharedPreferences("localSave", context.MODE_WORLD_READABLE ).getString("name", "");
 		Cursor cursor= db.rawQuery(sql, new String[]{name});
-		//Î´Íê´ýÐø
 		cursor.moveToLast();
 		while(cursor.moveToPrevious()){
 			cursor.moveToNext();

@@ -80,6 +80,9 @@ public class Login extends Activity {
 					e.printStackTrace();
 				}
 				}
+			if(msg.what==0x124){
+				Toast.makeText(Login.this, "服务器连接错误", Toast.LENGTH_SHORT).show();
+			}
 			}
 			
 		};

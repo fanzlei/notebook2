@@ -16,7 +16,7 @@
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Fanz"
+        android:text="我的账号"
         android:clickable="true"
         android:id="@+id/account_infromation"
         android:onClick="click"/>

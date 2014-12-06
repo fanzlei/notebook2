@@ -64,7 +64,9 @@ public class SaveToServer extends Thread{
 			    }
 			    int id=Integer.valueOf(idString);
 			    System.out.println("服务器该note的ID为："+id);
-			    new MySQLiteUtils(context).saveNoteServerID(id);
+			    new MySQLiteUtils(context).saveNoteServerID(note,id);
+			    conn.disconnect();
+			    os.close();
 			}
 			//os.close();
 			//conn.disconnect();
@@ -76,6 +78,8 @@ public class SaveToServer extends Thread{
 			e.printStackTrace();
 			System.out.println("服务器连接失败");
 		}
+			
+		
 		
 		
 	

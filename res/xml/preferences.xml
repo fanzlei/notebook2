@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="设置">
+          <Preference android:title="账户信息" android:summary="用户账号的信息，修改密码"></Preference>
+    <CheckBoxPreference 
+        android:title="仅WIFI同步"
+        android:summaryOn="是"
+        android:summaryOff="否"
+        android:key="syncWIFIOnly"></CheckBoxPreference>
+    <Preference 
+        android:title="检查更新"
+        android:summary="获取最新版本"></Preference>
+    <Preference
+        android:title="关于我们"
+        ></Preference>
+    </PreferenceCategory>
+  
+
+</PreferenceScreen>

@@ -41,7 +41,7 @@ public class CheckUser  extends Thread{
 		HttpGet get=new HttpGet(path);
 		try {
 			
-			httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT,  5000);
+			httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT,  2000);
 		    //HttpClient连接超时直接退出线程
 			response=httpClient.execute(get);
 			if(response.getStatusLine().getStatusCode()==200){
@@ -61,6 +61,8 @@ public class CheckUser  extends Thread{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println("服务器连接错误");
+            handler.sendEmptyMessage(0x124);
 		}
 	}
 
