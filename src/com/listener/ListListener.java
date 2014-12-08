@@ -1,6 +1,8 @@
 package com.listener;
 
+import com.adapter.MyAdapter;
 import com.fanz.notebook2.R;
+import com.notebook2.Main;
 import com.notebook2.NoteDetail;
 import com.utils.MySQLiteHelper;
 import com.utils.MySQLiteUtils;
@@ -14,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.SimpleAdapter;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 
@@ -58,9 +61,7 @@ public class ListListener implements OnItemClickListener, OnItemLongClickListene
 				case R.id.popupMenu_delete:
 					new MySQLiteUtils(context).deleteNote(note);
 					break;
-				case R.id.popupMenu_addStar:
-					
-					break;
+				
 				}
 				
 				return false;

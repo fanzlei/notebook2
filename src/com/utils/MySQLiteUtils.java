@@ -35,9 +35,9 @@ public class MySQLiteUtils {
 	public boolean saveNote(Note note){
 		try {
 			db=helper.getReadableDatabase();
-			String sql="insert into user_notebook(name,title,content,date,type) values(?,?,?,?,?)";
+			String sql="insert into user_notebook(name,title,content,date,type,serverid) values(?,?,?,?,?,?)";
 			db.execSQL(sql, new String[]{note.getUser_name(),note.getTitle(),
-					note.getContent(),note.getDate(),String.valueOf(note.getType())});
+					note.getContent(),note.getDate(),String.valueOf(note.getType()),note.getServerId()});
 			System.out.println("笔记保存在SQLite中成功\n笔记内容为：");
 			System.out.println("笔记创建内容为："+note.getUser_name()+'\n'+note.getDate()+'\n'+note.getTitle()+'\n'+note.getContent());
 			return true;
@@ -51,10 +51,10 @@ public class MySQLiteUtils {
 		//note的id是数据库自动创建的，现在这个note只带数据，没有id
 		db=helper.getReadableDatabase();
 		
-		Cursor cursor= db.rawQuery("select id from user_notebook", null);
-		cursor.moveToLast();
+		Cursor cursor= db.rawQuery("select id from user_notebook where date='"+note.getDate()+"'", null);
+		cursor.moveToFirst();
 		int id=cursor.getInt(0);
-		System.out.println("SQLite中最后一个note的id为："+id);
+		System.out.println("SQLite中该note的id为："+id);
 		String sql="update user_notebook set serverid='"+serverID+"' where id='"+id+"'";
 		db.execSQL(sql);
 		System.out.println("保存并获得serverid，该note为：\nid=SQLite自动创建"+"\nname="+note.getUser_name()
@@ -135,6 +135,8 @@ public class MySQLiteUtils {
 		    set.add(note.getServerId());
 		    editor.putStringSet("deletedNote", set);
 		    editor.commit();
+		    context.startActivity(new Intent(context,Main.class));
+		    
 		}
 		
 		System.out.println("删除note成功，该note的ID为："+note.getId()+"serverId为："+note.getServerId());

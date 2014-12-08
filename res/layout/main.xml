@@ -81,28 +81,24 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:id="@+id/bottom">
-            <ImageView 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher"
-                android:onClick="showConfiguration"/>
-            <TextView 
+          
+            <Button 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="设置"
                 android:textSize="20sp"
                 android:layout_gravity="center_vertical"
-                android:clickable="true"
                 android:onClick="showConfiguration"/>
-            <ImageView
+            <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher"
-                android:onClick="sync"/>
+                android:text="同步"
+                android:onClick="startsync"/>
             <TextView 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="上次同步："
+                android:id="@+id/syncDate"
                 android:layout_gravity="center_horizontal|bottom"/>
         </LinearLayout>
       

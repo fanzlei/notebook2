@@ -1,5 +1,6 @@
 package com.notebook2;
 
+import java.util.HashSet;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -15,14 +16,24 @@ import com.utils.JsonUtils;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -54,7 +65,6 @@ public class Main extends Activity implements  OnItemClickListener{
 	float screenWidth;
 	boolean isShowLeft=false;
 	boolean isReadyExit=false;
-	GestureDetector detector;
 	ListView noteList;
 	
 	ListView menuList;
@@ -65,6 +75,9 @@ public class Main extends Activity implements  OnItemClickListener{
 	String pass;
 	int REQUEST_CODE=0x321;
 	ListListener listListener;
+	boolean isWIFI;
+	static TextView syncDate;
+	static SharedPreferences sp;
 	//保存当前显示的List是哪个，当从其他Activity回到这里是就显示原来的List
 	int nowShowList=0;
 	public final  Handler handler=new Handler(){
@@ -80,6 +93,9 @@ public class Main extends Activity implements  OnItemClickListener{
 					try {
 						if(jo.getBoolean("isChecked")){
 							isLogined=true;
+							SharedPreferences.Editor e=sp.edit();
+							e.putBoolean("isLogined", true);
+							e.commit();
 							Toast.makeText(Main.this, "登陆成功", Toast.LENGTH_SHORT).show();
 							
 						}else{
@@ -118,6 +134,11 @@ public class Main extends Activity implements  OnItemClickListener{
 		menuList.setAdapter(new MyAdapter(this).getMenuAdapter());
 		menuList.setOnItemClickListener(this);
 		noteList=(ListView) findViewById(R.id.note_list);
+		syncDate=(TextView) findViewById(R.id.syncDate);
+	    sp=getSharedPreferences("localSave", MODE_WORLD_READABLE);
+        syncDate.setText("上次同步:"+sp.getString("syncDate", ""));
+      
+        
 		/*SimpleAdapter adapter= new MyAdapter(Main.this).getMyListAdapter();
 		noteList.setAdapter(adapter);
 		nowShowList=0;
@@ -131,7 +152,6 @@ public class Main extends Activity implements  OnItemClickListener{
 				// TODO Auto-generated method stub
 				showLeftPage();
 			}});
-		SharedPreferences sp=this.getSharedPreferences("localSave", MODE_WORLD_READABLE);
 		name=sp.getString("name", "");
 		pass=sp.getString("pass", "");
 		new CheckUser(handler,name,pass).start();
@@ -154,22 +174,6 @@ public class Main extends Activity implements  OnItemClickListener{
 		listListener=new ListListener(this,nowShowList);
 		noteList.setOnItemClickListener(listListener);
 		noteList.setOnItemLongClickListener(listListener);
-	}
-
-
-
-
-
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
-		super.onActivityResult(requestCode, resultCode, data);
-		if(requestCode==REQUEST_CODE&&resultCode==0){
-			//由登陆界面跳转到本Activity
-			
-		}
-		
 	}
 
 	public void showRightPage(){
@@ -232,7 +236,7 @@ public class Main extends Activity implements  OnItemClickListener{
 			return true;
 		}
 		if(keyCode==KeyEvent.KEYCODE_BACK&&!isShowLeft&&isReadyExit){
-			System.exit(0);
+			this.finish();
 		}
 		if(keyCode==KeyEvent.KEYCODE_MENU&&isShowLeft){
 			showRightPage();
@@ -348,15 +352,73 @@ public class Main extends Activity implements  OnItemClickListener{
 		startActivity(intent);
 	}
 	//执行同步操作
-	public void sync(View v){
-		if(isLogined){
-			Toast.makeText(Main.this, "开始同步", Toast.LENGTH_SHORT).show();
-			Intent intent=new Intent("com.fanz.syncService");
-			intent.putExtra("name", name);
-			startService(intent);
+	public void startsync(View v){
+		showRightPage();
+		if(sp.getBoolean("isLogined", false)){
+            if(sp.getBoolean("syncWIFIOnly", false)){
+            	//系统设置为仅wifi同步
+            	ConnectivityManager cm=(ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+            	NetworkInfo info=cm.getActiveNetworkInfo();
+            	if(info!=null){
+            		if(info.getType()==ConnectivityManager.TYPE_WIFI){
+                		//wifi已开
+                		System.out.println("dfsdfsd");
+                		Toast.makeText(Main.this, "开始同步", Toast.LENGTH_SHORT).show();
+            			Intent intent=new Intent("com.fanz.syncService");
+            			startService(intent);
+            			return;
+                	}else{Toast.makeText(Main.this, "仅wifi同步，当前wifi未开启", Toast.LENGTH_SHORT).show();return;}
+            	}else{Toast.makeText(this, "当前无网络", Toast.LENGTH_SHORT).show();return;}
+            }
+            ConnectivityManager cm=(ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        	NetworkInfo info=cm.getActiveNetworkInfo();
+        	if(info!=null){
+        		 Toast.makeText(Main.this, "开始同步", Toast.LENGTH_SHORT).show();
+     			Intent intent=new Intent("com.fanz.syncService");
+     			startService(intent);return;
+        	}else{Toast.makeText(this, "当前无网络", Toast.LENGTH_SHORT).show();}
+           
 		}else{
 			Toast.makeText(Main.this, "请先登陆", Toast.LENGTH_SHORT).show();
 		}
 	}
 	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		System.out.println("onDestroy");
+		SharedPreferences.Editor e=sp.edit();
+		e.putBoolean("isLogined", false);
+		e.commit();
+		Intent intent=new Intent("com.fanz.syncService");
+		stopService(intent);
+		/*//根据设置来添加一个全局定时器用于后台自动同步 每过一小时自动同步一次，若某次同步完成，则在receive中取消该定时器；否则一直每小时执行直到同步完成
+		AlarmManager am=(AlarmManager) this.getSystemService(Service.ALARM_SERVICE);
+		Intent as=new Intent();
+		as.setAction("com.fanz.syncService");
+		PendingIntent pi=PendingIntent.getService(this,0, as, 0);
+		am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, 0, 30*1000, pi);*/
+	}
+
+	public static class MyReceiver extends BroadcastReceiver{
+
+		public MyReceiver() {
+			// TODO Auto-generated constructor stub
+		}
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+	        SharedPreferences.Editor editor=sp.edit();
+	        editor.putString("syncDate", intent.getStringExtra("date"));
+	        editor.putStringSet("deletedNote", new HashSet<String>());
+	        editor.commit();
+	        syncDate.setText("上次同步:"+sp.getString("syncDate", ""));
+	      /*  AlarmManager am=(AlarmManager) context.getSystemService(Service.ALARM_SERVICE);
+	        Intent as=new Intent();
+			as.setAction("com.fanz.syncService");
+			PendingIntent pi=PendingIntent.getService(context,0, as, 0);
+			am.cancel(pi);*/
+		}
+	}
 }

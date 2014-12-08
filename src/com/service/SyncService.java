@@ -12,6 +12,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -41,7 +42,9 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.util.Log;
 
 public class SyncService extends Service{
@@ -50,8 +53,30 @@ public class SyncService extends Service{
     SQLiteDatabase db;
     MySQLiteUtils mysqlUtils;
     SharedPreferences sp;
+    final int DELETESUCCESS=0x123;
+    final int DELETEFAIL=0x124;
     //保存本地删除的note的serverId，当同步时候用来向服务器发送请求删除对应note
-    String[] deletedNote=new String[]{};
+    List<String> list=new ArrayList<String>();
+    Handler handler=new Handler(){
+
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			super.handleMessage(msg);
+			switch(msg.what){
+			case DELETESUCCESS:
+				System.out.println("delete success");
+				new GetAllNoteFromServer(handler, SyncService.this, name).start();
+				break;
+			case DELETEFAIL:
+				System.out.println("delete fail");
+				break;
+			
+			}
+			
+		}
+    	
+    };
 	public class MyBinder extends Binder{
 		
 	}
@@ -70,134 +95,35 @@ public class SyncService extends Service{
 		sp= this.getSharedPreferences("localSave", this.MODE_WORLD_READABLE);
 		name=sp.getString("name", "");
 		mysqlUtils=new MySQLiteUtils(this);
-		
+		System.out.println("service created");
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
 		Set set= sp.getStringSet("deletedNote", new HashSet<String>());
-		deletedNote= (String[]) set.toArray();
-		int deleteSuccessCode=deleteNoteToService(deletedNote);
-		if(deleteSuccessCode==200){
-			//服务器删除note后才进行其他同步操作
-		HttpClient client=new DefaultHttpClient();
-		HttpPost post=new HttpPost("http://192.168.0.108:8080/Notebook2_service/Sync");
-		List<NameValuePair> list=new ArrayList<NameValuePair>();
-		list.add(new BasicNameValuePair("name",name));
-		try {
-			HttpEntity entity=new UrlEncodedFormEntity(list,HTTP.UTF_8);
-			HttpResponse res= client.execute(post);
-			if(res.getStatusLine().getStatusCode()==200){
-				InputStream is= res.getEntity().getContent();
-				String jsonArrayString=new JsonUtils().inputStreamToString(is);
-				JSONArray jsonArray=new JSONArray(jsonArrayString);
-				for(int i=0;i<jsonArray.length();i++){
-					//循环每个服务器传过来的note，本地没有则保存到本地，
-					//本地有且本地note的date和服务器的note的date不一致，即本地note有改动
-					//向服务器更新该note
-					JSONObject jo=jsonArray.getJSONObject(i);
-					String sql="select * from user_notebook where serverid='"+jo.getInt("serverId")+"'";
-					Cursor cursor=db.rawQuery(sql, null);
-					if(cursor.getCount()<1){
-						//没有找到本地对应note,把服务器的note保存到本地
-						Note note=new Note();
-						note.setContent(jo.getString("content"));
-						note.setDate(jo.getString("date"));
-						note.setServerId(jo.getString("serverId"));
-						note.setTitle(jo.getString("title"));
-						note.setType(Integer.parseInt(jo.getString("type")));
-						note.setUser_name(name);
-						mysqlUtils.saveNote(note);
-					}else{
-						//本地有该serverId的note，如果本地的note有改动，更新服务器对应的note
-						cursor.moveToNext();
-						JSONObject joo=new JSONObject();
-						joo.put("name", name);
-						joo.put("title", cursor.getString(3));
-						joo.put("content", cursor.getString(4));
-						joo.put("date", cursor.getString(5));
-						joo.put("type", cursor.getString(6));
-						updateNoteToService(joo);
-					}
-				}
-			}
-			
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		Iterator it= set.iterator();
+		while(it.hasNext()){
+			String str= (String) it.next();
+			list.add(str);
+			System.out.println("got serverId:"+str+"\n");
 		}
-		}
-		return super.onStartCommand(intent, flags, startId);
-	}
-
-	private void updateNoteToService(JSONObject jsonObject) {
-		// TODO Auto-generated method stub
-		URL url;
-		try {
-			url = new URL("http://192.168.0.108:8080/Notebook_service/UpdateNote");
-			HttpURLConnection conn=(HttpURLConnection) url.openConnection();
-			conn.setDoInput(true);
-			conn.setDoOutput(true);
-			conn.setConnectTimeout(2000);
-			conn.setRequestMethod("POST");
-			conn.getOutputStream().write(jsonObject.toString().getBytes());
-			conn.getOutputStream().flush();
-			conn.getOutputStream().close();
-			conn.disconnect();
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	private int deleteNoteToService(String[] array){
-		JSONArray ja=new JSONArray();
-		for(int i=0;i<array.length;i++){
-			try {
-				JSONObject jo=new JSONObject();
-				jo.put("serverId", array[i]);
-				ja.put(jo);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();}}
-		URL url;
-		try {
-			url = new URL("http://192.168.0.108:8080/Notebook_service/DeleteNote");
-			HttpURLConnection conn=(HttpURLConnection) url.openConnection();
-			conn.setConnectTimeout(2000);
-			conn.setDoInput(true);
-			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			OutputStream os=conn.getOutputStream();
-			os.write(ja.toString().getBytes());
-			if(conn.getResponseCode()==200){
-				return 200;
-			}
-			os.flush();
-			os.close();
-			conn.disconnect();
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		new DeleteNoteToServer(handler, list).start();
+		//把本地没有serverId的note上传到服务器
+		String sql="select * from user_notebook where name='"+name+"' and serverid=''";
+		Cursor cursor=db.rawQuery(sql, null);
+		System.out.println("本地没有serverId的note数量："+cursor.getCount());
+		while(cursor.moveToNext()){
+			Note note =new Note();
+			note.setContent(cursor.getString(4));
+			note.setDate(cursor.getString(5));
+			note.setTitle(cursor.getString(3));
+			note.setType(Integer.valueOf(cursor.getString(6)));
+			note.setUser_name(name);
+			new SaveToServer(note, this).start();
 		}
 		
-		return 0;
+		return super.onStartCommand(intent, flags, startId);
 	}
 	@Override
 	public void onDestroy() {

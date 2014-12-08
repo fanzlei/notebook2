@@ -17,6 +17,8 @@ public final class R {
         public static final int abc_slide_out_top=0x7f040005;
     }
     public static final class array {
+        public static final int listPreference=0x7f0d0001;
+        public static final int listValues=0x7f0d0002;
         public static final int note_type=0x7f0d0000;
     }
     public static final class attr {
@@ -1673,11 +1675,10 @@ containing a value of this type.
         public static final int always=0x7f0a0014;
         public static final int author_date=0x7f0a004d;
         public static final int beginning=0x7f0a001b;
-        public static final int bottom=0x7f0a005b;
+        public static final int bottom=0x7f0a005a;
         public static final int checkPass=0x7f0a0069;
         public static final int checkbox=0x7f0a0029;
         public static final int collapseActionView=0x7f0a0015;
-        public static final int configuration_list=0x7f0a0052;
         public static final int decor_content_parent=0x7f0a002f;
         public static final int default_activity_button=0x7f0a0024;
         public static final int dialog=0x7f0a0019;
@@ -1693,15 +1694,15 @@ containing a value of this type.
         public static final int icon=0x7f0a0026;
         public static final int ifRoom=0x7f0a0016;
         public static final int image=0x7f0a0023;
-        public static final int leftPage=0x7f0a0058;
-        public static final int left_title=0x7f0a0059;
+        public static final int leftPage=0x7f0a0057;
+        public static final int left_title=0x7f0a0058;
         public static final int listMode=0x7f0a000a;
         public static final int list_item=0x7f0a0025;
-        public static final int menuList=0x7f0a005a;
+        public static final int menuList=0x7f0a0059;
         public static final int menu_item_image=0x7f0a005c;
         public static final int menu_item_text=0x7f0a005d;
         public static final int middle=0x7f0a001d;
-        public static final int name=0x7f0a0053;
+        public static final int name=0x7f0a0052;
         public static final int never=0x7f0a0017;
         public static final int newPassword=0x7f0a005f;
         public static final int none=0x7f0a000f;
@@ -1717,19 +1718,18 @@ containing a value of this type.
         public static final int note_item_date=0x7f0a0067;
         public static final int note_item_summary=0x7f0a0068;
         public static final int note_item_title=0x7f0a0066;
-        public static final int note_list=0x7f0a0057;
+        public static final int note_list=0x7f0a0056;
         public static final int note_title=0x7f0a004c;
         public static final int oldPassword=0x7f0a005e;
-        public static final int pass=0x7f0a0054;
+        public static final int pass=0x7f0a0053;
         public static final int phone=0x7f0a006a;
-        public static final int picture_capture=0x7f0a0071;
-        public static final int picture_libs=0x7f0a0070;
-        public static final int popupMenu_addStar=0x7f0a006f;
+        public static final int picture_capture=0x7f0a0070;
+        public static final int picture_libs=0x7f0a006f;
         public static final int popupMenu_delete=0x7f0a006e;
         public static final int progress_circular=0x7f0a0007;
         public static final int progress_horizontal=0x7f0a0008;
         public static final int radio=0x7f0a002b;
-        public static final int rightPage=0x7f0a0055;
+        public static final int rightPage=0x7f0a0054;
         public static final int search_badge=0x7f0a0035;
         public static final int search_bar=0x7f0a0034;
         public static final int search_button=0x7f0a0036;
@@ -1743,11 +1743,12 @@ containing a value of this type.
         public static final int shortcut=0x7f0a002a;
         public static final int showCustom=0x7f0a0010;
         public static final int showHome=0x7f0a0011;
-        public static final int showLeft=0x7f0a0056;
+        public static final int showLeft=0x7f0a0055;
         public static final int showTitle=0x7f0a0012;
         public static final int spinner=0x7f0a004e;
         public static final int split_action_bar=0x7f0a0004;
         public static final int submit_area=0x7f0a003c;
+        public static final int syncDate=0x7f0a005b;
         public static final int tabMode=0x7f0a000c;
         public static final int title=0x7f0a0027;
         public static final int up=0x7f0a0001;
@@ -1807,17 +1808,16 @@ containing a value of this type.
         public static final int account=0x7f030017;
         public static final int account_information=0x7f030018;
         public static final int add_activity=0x7f030019;
-        public static final int configuration_activity=0x7f03001a;
-        public static final int login=0x7f03001b;
-        public static final int main=0x7f03001c;
-        public static final int menu_adapter_item=0x7f03001d;
-        public static final int modify_account=0x7f03001e;
-        public static final int note_detail=0x7f03001f;
-        public static final int note_item=0x7f030020;
-        public static final int popup_picture_selector=0x7f030021;
-        public static final int register=0x7f030022;
-        public static final int support_simple_spinner_dropdown_item=0x7f030023;
-        public static final int versions=0x7f030024;
+        public static final int login=0x7f03001a;
+        public static final int main=0x7f03001b;
+        public static final int menu_adapter_item=0x7f03001c;
+        public static final int modify_account=0x7f03001d;
+        public static final int note_detail=0x7f03001e;
+        public static final int note_item=0x7f03001f;
+        public static final int popup_picture_selector=0x7f030020;
+        public static final int register=0x7f030021;
+        public static final int support_simple_spinner_dropdown_item=0x7f030022;
+        public static final int versions=0x7f030023;
     }
     public static final class menu {
         public static final int main=0x7f0e0000;

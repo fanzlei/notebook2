@@ -30,11 +30,14 @@ public class JsonUtils {
 		ByteArrayOutputStream os=new ByteArrayOutputStream();
 		byte[] data=new byte[1024];
 		int len=0;
+		String str=new String();
 		try {
 			while((len=is.read(data))!=-1){
 				os.write(data,0,data.length);
+				str+=os.toString();
 			}
-			return new String(os.toByteArray());
+			return str;
+			//return new String(os.toByteArray());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

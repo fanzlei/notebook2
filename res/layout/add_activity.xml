@@ -67,7 +67,7 @@
        android:layout_alignParentBottom="true"
        >
        
-    <Button 
+   <!--  <Button 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="add_picture"
@@ -80,14 +80,13 @@
         android:onClick="add_sound"
         android:text="声音"
         android:layout_centerHorizontal="true"
-       />
+       /> -->
     <Button 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="saveRecord"
         android:text="保存"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
+        android:layout_centerHorizontal="true"
         />
    </RelativeLayout> 
 

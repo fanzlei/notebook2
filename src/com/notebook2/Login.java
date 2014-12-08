@@ -62,13 +62,13 @@ public class Login extends Activity {
 						editor.putString("pass", pass);
 						editor.putString("phone", jo.getString("phone"));
 						editor.putString("email", jo.getString("email"));
+						editor.putBoolean("isLogined", true);
 						editor.commit();
 						Intent intent=new Intent(Login.this,Main.class);
 						intent.putExtra("name", name);
-						Login.this.setResult(0, intent);
-						Intent intnt=new Intent(Login.this,Main.class);
-						startActivity(intnt);
-						Login.this.finish();
+						intent.putExtra("isLogined", true);
+						startActivity(intent);
+						//Login.this.finish();
 					}else{
 						Toast.makeText(Login.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
 						Uri uri=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

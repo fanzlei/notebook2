@@ -7,6 +7,13 @@
         android:summaryOn="是"
         android:summaryOff="否"
         android:key="syncWIFIOnly"></CheckBoxPreference>
+   <!--  <ListPreference
+        android:key="listPreference"
+        android:dialogTitle="选择同步方式"
+        android:negativeButtonText="取消"
+        android:title="同步方式"
+        android:entries="@array/listPreference"
+        android:entryValues="@array/listValues"></ListPreference> -->
     <Preference 
         android:title="检查更新"
         android:summary="获取最新版本"></Preference>
