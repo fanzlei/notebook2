@@ -40,7 +40,7 @@ public class SaveToServer extends Thread{
 		HttpURLConnection conn;
 		URL url;
 		try {
-			url = new URL("http://192.168.0.108:8080/Notebook2_service/CreateNote");
+			url = new URL(URLText.urlText+"CreateNote");
 			conn=(HttpURLConnection) url.openConnection();
 			conn.setConnectTimeout(5000);
 			conn.setRequestMethod("POST");
@@ -52,10 +52,10 @@ public class SaveToServer extends Thread{
 			os.flush();
 			/*PrintWriter out=new PrintWriter(conn.getOutputStream());
 			out.print(jsonString);*/
-			System.out.println("ÒÑ·¢ËÍjsonµ½·şÎñÆ÷");
+			System.out.println("å‘é€jsonæœåŠ¡å™¨");
 			
 			if(conn.getResponseCode()==200){
-				//»ñÈ¡·şÎñÆ÷·µ»ØµÄID
+				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID
 			    BufferedReader br=new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			    String line;
 			    String idString="";
@@ -63,7 +63,7 @@ public class SaveToServer extends Thread{
 			    	idString+=line;
 			    }
 			    int id=Integer.valueOf(idString);
-			    System.out.println("·şÎñÆ÷¸ÃnoteµÄIDÎª£º"+id);
+			    System.out.println("æœåŠ¡å™¨è¿”å›notedçš„serverIDä¸ºï¼š"+id);
 			    new MySQLiteUtils(context).saveNoteServerID(note,id);
 			    conn.disconnect();
 			    os.close();
@@ -76,7 +76,7 @@ public class SaveToServer extends Thread{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println("·şÎñÆ÷Á¬½ÓÊ§°Ü");
+			System.out.println("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 		}
 			
 		

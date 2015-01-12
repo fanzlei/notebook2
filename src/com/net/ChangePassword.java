@@ -42,7 +42,7 @@ public class ChangePassword extends Thread{
 		super.run();
 		URL url;
 		try {
-			url = new URL("http://192.168.0.108:8080/Notebook2_service/ChangePassword");
+			url = new URL(URLText.urlText+"ChangePassword");
 			HttpURLConnection conn=(HttpURLConnection) url.openConnection();
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
@@ -59,7 +59,7 @@ public class ChangePassword extends Thread{
 					jsonString+=line;
 				}
 				try {
-					JSONObject joo=new JSONObject(jsonString);
+					JSONObject joo=new JSONObject(new String(jsonString.getBytes(),"UTF-8"));
 					if(joo.getBoolean("isChangedPass")){
 						handler.sendEmptyMessage(1);
 					}else{

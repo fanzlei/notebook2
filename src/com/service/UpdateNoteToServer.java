@@ -9,6 +9,8 @@ import java.sql.Date;
 
 import org.json.JSONObject;
 
+import com.net.URLText;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,7 +34,7 @@ public class UpdateNoteToServer extends Thread{
 		
 		URL url;
 		try {
-			url = new URL("http://192.168.0.108:8080/Notebook2_service/UpdateNote");
+			url = new URL(URLText.urlText+"UpdateNote");
 			HttpURLConnection conn=(HttpURLConnection) url.openConnection();
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
@@ -42,13 +44,12 @@ public class UpdateNoteToServer extends Thread{
 			os.write(jsonObject.toString().getBytes());
 			os.flush();
 			if(conn.getResponseCode()==200){
-				System.out.println("更新服务器的note成功");
 				Intent intent=new Intent();
 				intent.setAction("com.fanz.notebook.sync");
 				intent.putExtra("date", new Date(System.currentTimeMillis()).toLocaleString());
 				context.sendBroadcast(intent);
 				Looper.prepare();
-				Toast.makeText(context, "同步完成", Toast.LENGTH_SHORT).show();
+				Toast.makeText(context, "鍚屾瀹屾垚", Toast.LENGTH_SHORT).show();
 				Looper.loop();
 			}
 			os.close();

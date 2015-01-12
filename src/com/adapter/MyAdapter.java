@@ -1,5 +1,6 @@
 package com.adapter;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +67,7 @@ public class MyAdapter {
 		return adapter;
 	}
 
-	public SimpleAdapter getMyListAdapter() {
+	public SimpleAdapter getMyListAdapter(){
 		// TODO Auto-generated method stub
 		List<Map<String,String>> list=new ArrayList<Map<String,String>>();
 		
@@ -87,7 +88,7 @@ public class MyAdapter {
 	    		content=content.substring(0, 30);
 	    	}
 	    	Map<String,String> map=new HashMap<String,String>();
-	    	map.put("title", title);
+			map.put("title", title);
 	    	map.put("date", "by "+nam+' '+date);
 	    	//summaryÏÔÊ¾Ç°30¸ö×Ö·û
 	    	map.put("summary", content);

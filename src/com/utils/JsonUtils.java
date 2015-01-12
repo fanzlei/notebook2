@@ -36,7 +36,7 @@ public class JsonUtils {
 				os.write(data,0,data.length);
 				str+=os.toString();
 			}
-			return str;
+			return new String(str.getBytes(),"UTF-8");
 			//return new String(os.toByteArray());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

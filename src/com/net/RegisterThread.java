@@ -46,7 +46,7 @@ public class RegisterThread extends Thread{
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		HttpPost post=new HttpPost("http://192.168.0.108:8080/Notebook2_service/Register");
+		HttpPost post=new HttpPost(URLText.urlText+"Register");
 		try {
 	        List<NameValuePair> params=new ArrayList<NameValuePair>();
 	        params.add(new BasicNameValuePair("name",name));

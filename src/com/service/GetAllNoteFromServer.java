@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.net.URLText;
 import com.utils.JsonUtils;
 import com.utils.MySQLiteHelper;
 import com.utils.MySQLiteUtils;
@@ -52,9 +53,9 @@ public class GetAllNoteFromServer extends Thread{
 	public void run() {
 		// TODO Auto-generated method stub
 		super.run();
-		//·þÎñÆ÷É¾³ýnoteºó²Å½øÐÐÆäËûÍ¬²½²Ù×÷
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½noteï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		HttpClient client=new DefaultHttpClient();
-		HttpPost post=new HttpPost("http://192.168.0.108:8080/Notebook2_service/Sync");
+		HttpPost post=new HttpPost(URLText.urlText+"Sync");
 		List<NameValuePair> list=new ArrayList<NameValuePair>();
 		list.add(new BasicNameValuePair("name",name));
 		try {
@@ -68,16 +69,16 @@ public class GetAllNoteFromServer extends Thread{
 				JSONArray jsonArray=new JSONArray(jsonArrayString);
 				System.out.println("has got JOSNArray from server,length="+jsonArray.length());
 				for(int i=0;i<jsonArray.length();i++){
-					//Ñ­»·Ã¿¸ö·þÎñÆ÷´«¹ýÀ´µÄnote£¬±¾µØÃ»ÓÐÔò±£´æµ½±¾µØ£¬
-					//±¾µØÓÐÇÒ±¾µØnoteµÄdateºÍ·þÎñÆ÷µÄnoteµÄdate²»Ò»ÖÂ£¬¼´±¾µØnoteÓÐ¸Ä¶¯
-					//Ïò·þÎñÆ÷¸üÐÂ¸Ãnote
+					//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½noteï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+					//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½noteï¿½ï¿½dateï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½noteï¿½ï¿½dateï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½noteï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+					//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½note
 					JSONObject jo=jsonArray.getJSONObject(i);
 					String sql="select * from user_notebook where serverid="+jo.getInt("serverId")+"";
 					Cursor cursor=db.rawQuery(sql, null);
-					System.out.println("²éÑ¯µ½serverIdÎª+"+jo.getInt("serverId")+"+µÄ½á¹ûÊý£º"+cursor.getCount());
+					System.out.println("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½serverIdï¿½ï¿½+"+jo.getInt("serverId")+"+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"+cursor.getCount());
 					cursor.moveToNext();
 					if(cursor.getCount()<1){
-						//Ã»ÓÐÕÒµ½±¾µØ¶ÔÓ¦note,°Ñ·þÎñÆ÷µÄnote±£´æµ½±¾µØ
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½note,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½noteï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						System.out.println("no matches note local");
 						Note note=new Note();
 						note.setContent(jo.getString("content"));
@@ -87,10 +88,10 @@ public class GetAllNoteFromServer extends Thread{
 						note.setType(Integer.parseInt(jo.getString("type")));
 						note.setUser_name(name);
 						mysqlUtils.saveNote(note);
-						System.out.println("°Ñ·þÎñÆ÷µÄnote±£´æµ½±¾µØ³É¹¦£¬serverIdÎª£º"+jo.getString("serverId"));
+						System.out.println("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½noteï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½serverIdï¿½ï¿½ï¿½ï¿½"+jo.getString("serverId"));
 					}else if(cursor.getString(5)!=jo.getString("date")){
-						//±¾µØÓÐ¸ÃserverIdµÄnote£¬Èç¹û±¾µØµÄnoteÓÐ¸Ä¶¯£¬¸üÐÂ·þÎñÆ÷¶ÔÓ¦µÄnote
-						System.out.println("·þÎñÆ÷noteµÄdateÎª£º"+jo.getString("date")+"\n±¾µØnoteµÄdateÎª£º"+cursor.getString(5)+"\nÈÕÆÚ²»Æ¥Åä£¬¿ªÊ¼Ïò·þÎñÆ÷Í¬²½");
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½serverIdï¿½ï¿½noteï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½noteï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½note
+						System.out.println("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½noteï¿½ï¿½dateï¿½ï¿½ï¿½ï¿½"+jo.getString("date")+"\nï¿½ï¿½ï¿½ï¿½noteï¿½ï¿½dateï¿½ï¿½ï¿½ï¿½"+cursor.getString(5)+"\nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 						
 						JSONObject joo=new JSONObject();
 						joo.put("name", name);

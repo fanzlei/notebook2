@@ -1,0 +1,7 @@
+eclipse.preferences.version=1
+encoding//src/com/net/CheckUser.java=UTF-8
+encoding//src/com/net/SaveToServer.java=UTF-8
+encoding//src/com/service/DeleteNoteToServer.java=UTF-8
+encoding//src/com/service/GetAllNoteFromServer.java=UTF-8
+encoding//src/com/service/UpdateNoteToServer.java=UTF-8
+encoding/<project>=gbk

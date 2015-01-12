@@ -11,6 +11,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.net.URLText;
+
 import android.os.Handler;
 import android.os.Message;
 
@@ -41,7 +43,7 @@ public class DeleteNoteToServer extends Thread{
 				e.printStackTrace();}}
 		URL url;
 		try {
-			url = new URL("http://192.168.0.108:8080/Notebook2_service/DeleteNote");
+			url = new URL(URLText.urlText+"DeleteNote");
 			HttpURLConnection conn=(HttpURLConnection) url.openConnection();
 			conn.setConnectTimeout(2000);
 			conn.setDoInput(true);
@@ -51,7 +53,7 @@ public class DeleteNoteToServer extends Thread{
 			os.write(ja.toString().getBytes());
 			os.flush();
 			if(conn.getResponseCode()==200){
-				//·þÎñÆ÷É¾³ý³É¹¦
+				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				handler.sendEmptyMessage(DELETESUCCESS);
 				
 			}else{handler.sendEmptyMessage(DELETEFAIL);}

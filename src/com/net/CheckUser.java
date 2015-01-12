@@ -37,12 +37,12 @@ public class CheckUser  extends Thread{
 
 	public void run() {
 		// TODO Auto-generated method stub
-		String path="http://192.168.0.108:8080/Notebook2_service/Login?name="+name+"&pass="+pass+"";
+		String path=URLText.urlText+"Login?name="+name+"&pass="+pass+"";
 		HttpGet get=new HttpGet(path);
 		try {
 			
 			httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT,  2000);
-		    //HttpClientÁ¬½Ó³¬Ê±Ö±½ÓÍË³öÏß³Ì
+		    //HttpClientï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			response=httpClient.execute(get);
 			if(response.getStatusLine().getStatusCode()==200){
 			InputStream is=response.getEntity().getContent();
@@ -61,7 +61,7 @@ public class CheckUser  extends Thread{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println("·þÎñÆ÷Á¬½Ó´íÎó");
+			System.out.println("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
             handler.sendEmptyMessage(0x124);
 		}
 	}
